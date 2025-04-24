@@ -1,0 +1,10 @@
+.icon-button {
+    background: none;
+    padding: 0.5rem;
+    cursor: pointer;
+  }
+  .icon-button__img {
+    height: 2rem;
+    width: auto;
+  }
+  
