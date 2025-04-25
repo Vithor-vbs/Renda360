@@ -1,18 +1,16 @@
 import React from 'react';
 import './Home.css';
 import { Banner } from '../banner';
+import { SidebarColumn } from '../sidebar/SidebarColumn';
 
-const Home: React.FC = () => {
-  return (
-    <div className="home-container">
-      <div className="home-background" />
-      <div className="home-content">
-        <Banner />
-        <h2 className="home-title">Bem-vindo à Home</h2>
-        <p className="home-description">Este é o micro frontend da Home.</p>
-      </div>
+const Home: React.FC = () => (
+  <div className="home-container">
+    <Banner />
+    <div className="home-main">
+      <SidebarColumn />
+      {/* aqui virá o conteúdo principal à direita */}
     </div>
-  );
-};
+  </div>
+);
 
 export default Home;

@@ -1,12 +1,11 @@
-/* Banner.css */
 .banner-container {
   display: flex;
   align-items: center;
   justify-content: space-between;
   min-height: 80px;
-  padding: 2px 1rem;
   background-color: #2e3137;
   border-radius: 50px;
+  margin: 2rem;
 }
 
 .banner-left {
@@ -16,9 +15,16 @@
 }
 
 .banner-image {
-  height: 3rem;
+  height: 3.5rem;
   width: auto;
-  background-color: #9b89b3;
+  background-color: #1EA896;
+  border-radius: 50px;
+  margin-left: 20px;
+}
+
+.account-image {
+  height: 3.5rem;
+  width: auto;
   border-radius: 50px;
   margin-left: 20px;
 }
@@ -34,28 +40,34 @@
   display: flex;
   gap: 0.5rem;
   padding: 0 20px;
+  align-items: center
 }
 
-/* Home button */
-.home-button {
-  background-color: transparent;
-  border: 1px solid #ECECED;
-  border-radius: 50%;
-  padding: 0.5rem;
-}
-
-/* Settings button */
+.notification-button,
 .settings-button {
   background-color: transparent;
   border: 1px solid #ECECED;
   border-radius: 50%;
-  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
 }
 
-/* Ícones internos */
-.home-button .icon-button__img,
+.notification-button .icon-button__img,
 .settings-button .icon-button__img {
-  width: 1.25rem;
-  height: 1.25rem;
-  filter: invert(1);
+  width: 1.5rem;
+  height: 1.5rem;
 }
+
+.banner-buttons h2 {
+  margin: 0;
+  line-height: 1;
+  font-size: 20px;
+  font-family: "Cascadia Code", sans-serif;
+  font-optical-sizing: auto;
+  font-style: normal;
+  color: #1EA896;
+}
+
+
