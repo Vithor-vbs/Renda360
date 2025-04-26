@@ -1,0 +1,27 @@
+.balances-row {
+    display: flex;
+    gap: 2rem;
+    margin-top: 2rem;
+  }
+  
+  .balance-card {
+    flex: 1;
+    background: #2e3137;
+    border-radius: 1.5rem;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .card-label {
+    color: #8a8a8a;
+    font-size: 0.875rem;
+  }
+  
+  .card-value {
+    color: #fff;
+    font-size: 1.5rem;
+    font-weight: 600;
+  }
+  

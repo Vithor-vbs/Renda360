@@ -1,0 +1,52 @@
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    height: 4rem;
+    background: transparent;
+  }
+  
+  .header-text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+  
+  .header-title {
+    color: #ffffff;
+    font-size: 1.5rem;
+    font-weight: 600;
+  }
+  
+  .header-subtitle {
+    color: #8a8a8a;
+    font-size: 0.875rem;
+  }
+  
+  .header-actions {
+    display: flex;
+    gap: 1rem;
+    margin-right: 1.5rem;
+  }
+  
+  .widget-button,
+  .date-button {
+    height: 2.25rem;
+    padding: 0 1rem;
+    border: none;
+    border-radius: 0.75rem;
+    font-size: 0.875rem;
+    cursor: pointer;
+  }
+  
+  .widget-button {
+    background: #2e2e2e;
+    color: #ffffff;
+  }
+  
+  .date-button {
+    background: #ffffff;
+    color: #000000;
+  }
+  

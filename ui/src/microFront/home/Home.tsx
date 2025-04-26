@@ -1,16 +1,19 @@
-import React from 'react';
-import './Home.css';
-import { Banner } from '../banner';
-import { SidebarColumn } from '../sidebar/SidebarColumn';
+import React from 'react'
+import './Home.css'
+import { Banner } from '../banner'
+import { SidebarColumn } from '../sidebar/SidebarColumn'
+import { MainBoard } from '../mainboard/Mainboard'
+import { SidebarChat } from '../sidebarchat/SidebarChat'
 
 const Home: React.FC = () => (
   <div className="home-container">
     <Banner />
     <div className="home-main">
       <SidebarColumn />
-      {/* aqui virá o conteúdo principal à direita */}
+      <MainBoard />
+      <SidebarChat />
     </div>
   </div>
-);
+)
 
-export default Home;
+export default Home
