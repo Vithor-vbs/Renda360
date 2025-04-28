@@ -18,10 +18,10 @@ import {
 } from "@/components/ui/chart"
 
 const chartData = [
-    { browser: "Utilidade", visitors: 275, fill: "#7938a8" },
-    { browser: "Alimentação", visitors: 200, fill: "#38a841" },
-    { browser: "Transporte", visitors: 287, fill: "#d6db37" },
-    { browser: "Aluguel", visitors: 173, fill: "#0078D7" },
+    { browser: "Utilidade", visitors: 275, fill: "#1EA896" },
+    { browser: "Alimentação", visitors: 200, fill: "#5e60b6" },
+    { browser: "Transporte", visitors: 287, fill: "#8b4092" },
+    { browser: "Aluguel", visitors: 173, fill: "#009cae" },
     { browser: "other", visitors: 190, fill: "#AAAAAA" },
   ]
 
