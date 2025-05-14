@@ -9,7 +9,7 @@ const Home: React.FC = () => (
   <div className="home-container">
     <Banner />
     <div className="home-main">
-      <SidebarColumn />
+        <SidebarColumn selected="Dashboard" />
       <MainBoard />
       <SidebarChat />
     </div>

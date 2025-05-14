@@ -1,0 +1,115 @@
+.button-date-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.button-date {
+  padding: 0.5rem 1.25rem;
+  background-color: #2a2a2a;
+  color: #f4f4f5;
+  font-weight: 500;
+  font-size: 0.9rem;
+  border: 1px solid #3f3f46;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.button-date:hover {
+  background-color: #3a3a3a;
+}
+
+.date-picker-dropdown {
+  position: absolute;
+  top: 120%;
+  right: 0;
+
+  z-index: 100;
+  background: #1e1e1e;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+}
+
+/* Override cores do react-date-range para dark mode */
+
+.rdrCalendarWrapper {
+  background-color: #1e1e1e !important;
+  color: #f4f4f5 !important;
+  border-radius: 0.5rem;
+}
+
+.rdrDayNumber span {
+  color: #e5e7eb !important;
+}
+
+.rdrMonthAndYearPickers select {
+  background-color: #2a2a2a !important;
+  color: #f4f4f5 !important;
+  border-radius: 15px !important;
+}
+
+.rdrNextPrevButton:hover {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.rdrDayToday .rdrDayNumber span::after {
+  background: #1ea896 !important; 
+}
+
+.rdrSelected,
+.rdrInRange,
+.rdrStartEdge,
+.rdrEndEdge {
+  background-color: #1ea896 !important;
+}
+
+.rdrDayPassive {
+  opacity: 0.3;
+}
+
+
+.rdrCalendarWrapper {
+  background-color: #1e1e1e !important;
+  color: #f4f4f5 !important;
+}
+
+.rdrDateDisplayWrapper,
+.rdrDateDisplay {
+  background-color: #1e1e1e !important;
+  border: none !important;
+}
+
+.rdrDateDisplayItem input {
+  background-color: #2a2a2a !important;
+  color: #ffffff !important;
+  border: 1px solid #3f3f46;
+  border-radius: 6px;
+}
+
+.rdrWeekDay {
+  color: #d1d5db; 
+  font-weight: 500;
+}
+
+.rdrWeekDay:nth-child(1), 
+.rdrWeekDay:nth-child(7){
+  color: #ef4444 !important;
+}
+
+.rdrNextButton, .rdrPprevButton, .rdrNextPrevButton {
+  background-color: transparent !important;
+  color: #f4f4f5;
+  font-size: 1.2rem;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  transition: background 0.2s ease;
+}
+
+.rdrMonthPicker select {
+  padding-left: 25px !important;
+}
+
+.rdrYearPicker select{
+  padding-left: 25px !important;
+}

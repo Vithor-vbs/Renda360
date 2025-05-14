@@ -1,13 +1,20 @@
 @import url('https://rsms.me/inter/inter.css');
 
-html, body {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    font-family: 'Inter', sans-serif;
-  }
-  
-  #root {
-    height: 100%;
-  }
-  
+html, body, #root {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;           /* permite que o conteúdo cresça */
+  width: 100%;
+  font-family: 'Inter', sans-serif;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+*, *::before, *::after {
+  box-sizing: inherit;
+}
+
+body {
+  overflow-y: auto;
+}

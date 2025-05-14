@@ -1,0 +1,214 @@
+.transaction-grid {
+  flex: 1;
+  padding: 2rem;
+  background-color: #1e1e1e;
+  border-radius: 1rem;
+  margin-left: 1rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  color: #f4f4f5;
+}
+
+.transaction-grid h3 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  color: #e5e7eb;
+}
+
+.no-transactions {
+  color: #aaa;
+  text-align: center;
+  padding: 2rem;
+}
+
+.transaction-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 0.75rem;
+}
+
+.transaction-table thead tr th {
+  background: transparent;
+  color: #a1a1aa;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-align: left;
+  padding: 0.75rem 1rem;
+}
+
+.transaction-table tbody tr {
+  background-color: #2a2a2a;
+  border-radius: 0.75rem;
+  transition: background 0.2s ease;
+}
+
+.transaction-table tbody tr:hover {
+  background-color: #333;
+}
+
+.transaction-table td {
+  padding: 1rem;
+  font-size: 0.95rem;
+  color: #f4f4f5;
+}
+
+.transaction-table td:first-child {
+  border-top-left-radius: 0.75rem;
+  border-bottom-left-radius: 0.75rem;
+}
+
+.transaction-table td:last-child {
+  border-top-right-radius: 0.75rem;
+  border-bottom-right-radius: 0.75rem;
+}
+
+.amount-positive {
+  color: #00ffae;
+  font-weight: bold;
+}
+
+.amount-negative {
+  color: #ff5b5b;
+  font-weight: bold;
+}
+
+.pill {
+  display: inline-block;
+  padding: 0.3rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: capitalize;
+  color: #fff;
+}
+
+.details-button {
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  padding: 0.4rem 0.8rem;
+  border-radius: 0.5rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.details-button:hover {
+  background-color: #2563eb;
+}
+
+/* Categoria Pills */
+.pill-cat-compras {
+  background-color: #3f51b5;
+  opacity: 0.7;
+
+}
+
+.pill-cat-streaming {
+  background-color: #7c3aed;
+  opacity: 0.7;
+}
+
+.pill-cat-alimentação {
+  background-color: #16a34a;
+  opacity: 0.7;
+
+}
+
+.pill-cat-saúde {
+  background-color: #e11d48;
+  opacity: 0.7;
+
+}
+
+.pill-cat-pessoal {
+  background-color: #c026d3;
+  opacity: 0.7;
+
+}
+
+.pill-cat-receita {
+  background-color: #10b981;
+  opacity: 0.7;
+
+}
+
+.pill-cat-moradia {
+  background-color: #0ea5e9;
+  opacity: 0.7;
+
+}
+
+.pill-cat-utilidades {
+  background-color: #eab308;
+  opacity: 0.7;
+
+}
+
+.pill-cat-saque {
+  background-color: #f97316;
+  opacity: 0.7;
+}
+
+.grid-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.filter-icon {
+  cursor: pointer;
+  color: #9ca3af;
+  padding: 0.4rem;
+  border-radius: 6px;
+  transition: background 0.2s ease;
+}
+
+.filter-icon:hover {
+  background-color: #2e2e2e;
+}
+
+.filter-dropdown {
+  margin: 1rem 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.filter-pill {
+  cursor: pointer;
+  border: 2px solid transparent;
+  opacity: 0.8;
+  transition: all 0.2s ease;
+}
+
+.filter-pill:hover {
+  opacity: 1;
+}
+
+.filter-pill.active {
+  border-color: white;
+  opacity: 1;
+}
+
+.amount-label {
+  display: inline-block;
+  padding: 0.4rem 0.8rem;
+  border-radius: 999px;
+  font-weight: bold;
+  font-size: 0.85rem;
+  text-align: center;
+  min-width: 100px;
+}
+
+.amount-positive {
+  background-color: #064e3b;
+  color: #10b981;
+}
+
+.amount-negative {
+  background-color: #7f1d1d;
+  color: #f87171;
+}
+

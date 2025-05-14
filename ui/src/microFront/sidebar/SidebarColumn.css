@@ -14,8 +14,8 @@
 .sidebar-item {
   display: flex;
   align-items: center;
-  gap: 1rem;
-  padding: 0.75rem 1rem;
+  gap: 1em;
+  padding: 1.3rem 1rem;
   color: #dae7e5;
   cursor: pointer;
   font-weight: 500;
@@ -43,3 +43,12 @@
   width: 100%;
   height: 100%;
 }
+
+.sidebar-item.active,
+.sidebar-item.active .sidebar-link {
+  background-color: #1EA896;
+  color: white;
+  border-radius: 0.5rem;
+}
+
+
