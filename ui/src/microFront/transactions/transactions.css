@@ -7,13 +7,12 @@
 }
 
 .transactions-card-grid {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 1.5rem;
-  justify-content: center;
 }
 
-.date-button{
+.date-button {
   height: 2.25rem;
   padding: 0 1rem;
   border: none;
@@ -22,7 +21,7 @@
   cursor: pointer;
 }
 
-.transaction-button{
+.transaction-button {
   display: flex;
   justify-content: flex-end;
   margin-bottom: 1rem;

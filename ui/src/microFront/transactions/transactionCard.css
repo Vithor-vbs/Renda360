@@ -3,7 +3,7 @@
   border-radius: 1rem;
   padding: 1.5rem;
   min-width: 220px;
-  max-width: 280px;
+  width: 100%;
   flex: 1 1 220px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   cursor: pointer;
@@ -21,7 +21,7 @@
 }
 
 .card-selected {
-  border: 2px solid #1EA896;
+  border: 2px solid #1ea896;
 }
 
 .card-header {
@@ -48,7 +48,7 @@
 }
 
 .badge-positive {
-  background-color: #1EA896;
+  background-color: #1ea896;
 }
 
 .badge-negative {
@@ -67,6 +67,7 @@
 }
 
 .card-subtitle {
+  white-space: nowrap;
   font-size: 0.85rem;
   color: #aaa;
 }

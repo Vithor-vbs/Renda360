@@ -3,7 +3,6 @@
   padding: 2rem;
   background-color: #1e1e1e;
   border-radius: 1rem;
-  margin-left: 1rem;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
   color: #f4f4f5;
 }
@@ -102,7 +101,6 @@
 .pill-cat-compras {
   background-color: #3f51b5;
   opacity: 0.7;
-
 }
 
 .pill-cat-streaming {
@@ -113,37 +111,31 @@
 .pill-cat-alimentação {
   background-color: #16a34a;
   opacity: 0.7;
-
 }
 
 .pill-cat-saúde {
   background-color: #e11d48;
   opacity: 0.7;
-
 }
 
 .pill-cat-pessoal {
   background-color: #c026d3;
   opacity: 0.7;
-
 }
 
 .pill-cat-receita {
   background-color: #10b981;
   opacity: 0.7;
-
 }
 
 .pill-cat-moradia {
   background-color: #0ea5e9;
   opacity: 0.7;
-
 }
 
 .pill-cat-utilidades {
   background-color: #eab308;
   opacity: 0.7;
-
 }
 
 .pill-cat-saque {
@@ -211,4 +203,3 @@
   background-color: #7f1d1d;
   color: #f87171;
 }
-
