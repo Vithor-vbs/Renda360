@@ -1,14 +1,13 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { DateRange } from 'react-date-range';
-import { format } from 'date-fns';
-import './buttonDate.css';
-import 'react-date-range/dist/styles.css';
-import 'react-date-range/dist/theme/default.css';
+import React, { useState, useRef, useEffect } from "react";
+import { DateRange } from "react-date-range";
+import { format } from "date-fns";
+import "./buttonDate.css";
+import "react-date-range/dist/styles.css";
+import "react-date-range/dist/theme/default.css";
 
 interface ButtonDateProps {
   onRangeChange?: (startDate: Date, endDate: Date) => void;
 }
-
 
 const ButtonDate: React.FC<ButtonDateProps> = ({ onRangeChange }) => {
   const [showPicker, setShowPicker] = useState(false);
@@ -16,26 +15,29 @@ const ButtonDate: React.FC<ButtonDateProps> = ({ onRangeChange }) => {
     {
       startDate: new Date(),
       endDate: new Date(),
-      key: 'selection',
+      key: "selection",
     },
   ]);
 
   const pickerRef = useRef<HTMLDivElement>(null);
-   useEffect(() => {
+  useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (pickerRef.current && !pickerRef.current.contains(event.target as Node)) {
+      if (
+        pickerRef.current &&
+        !pickerRef.current.contains(event.target as Node)
+      ) {
         setShowPicker(false);
       }
     };
 
     if (showPicker) {
-      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener("mousedown", handleClickOutside);
     } else {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     }
 
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [showPicker]);
 
@@ -48,22 +50,26 @@ const ButtonDate: React.FC<ButtonDateProps> = ({ onRangeChange }) => {
 
   const formatRange = () => {
     const { startDate, endDate } = range[0];
-    return `${format(startDate, 'MMM dd')} – ${format(endDate, 'MMM dd')}`;
+    return `${format(startDate, "MMM dd")} – ${format(endDate, "MMM dd")}`;
   };
 
   return (
     <div className="button-date-wrapper" ref={pickerRef}>
-      <button className="button-date" onClick={() => setShowPicker(!showPicker)}>
+      <button
+        className="button-date"
+        onClick={() => setShowPicker(!showPicker)}
+      >
         {formatRange()}
       </button>
       {showPicker && (
         <div className="date-picker-dropdown">
+          {/* checkar se essa lib tem suporte a português */}
           <DateRange
             editableDateInputs={true}
             onChange={handleChange}
             moveRangeOnFirstSelection={false}
             ranges={range}
-            rangeColors={['#1EA896']}
+            rangeColors={["#1EA896"]}
           />
         </div>
       )}

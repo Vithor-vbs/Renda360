@@ -23,9 +23,12 @@ const Transactions: React.FC = () => {
 
   return (
     <div className="transactions-content">
-      <div className='transaction-button'>
+      <div className="transactions-header">
+        <h2>Transações</h2>
+        <div className='transaction-button'>
         <ButtonDate onRangeChange={(start, end) => {
       }} />
+      </div>
       </div>
       <div className="transactions-card-grid">
         {cards.map((card) => (
