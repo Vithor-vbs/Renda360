@@ -8,9 +8,7 @@ import Transactions from './Transactions';
 
 const TransactionsPage: React.FC = () => (
   <div className="transactions-page-container">
-    <Banner />
     <div className="transactions-page-main">
-        <SidebarColumn selected="Transactions" />
         <Transactions />
     </div>
   </div>

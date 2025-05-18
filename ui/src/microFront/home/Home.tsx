@@ -7,9 +7,7 @@ import { SidebarChat } from '../sidebarchat/SidebarChat'
 
 const Home: React.FC = () => (
   <div className="home-container">
-    <Banner />
     <div className="home-main">
-        <SidebarColumn selected="Dashboard" />
       <MainBoard />
       <SidebarChat />
     </div>

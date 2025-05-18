@@ -1,17 +1,21 @@
-// ui/src/App.tsx
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import './App.css';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import AppLayout from './components/layout/AppLayout';
 import { Home } from './microFront/home';
 import TransactionsPage from './microFront/transactions/TransactionsPage';
+import NotificationPage from './microFront/notification/NotificationPage';
+
 function App() {
   return (
-    <Router>
+    <BrowserRouter>
       <Routes>
-        <Route path="/Home" element={<Home />} />
-        <Route path="/transactions" element={<TransactionsPage />} />
+        <Route path="/" element={<AppLayout />}>
+          <Route path="Home" element={<Home />} />
+          <Route path="transactions" element={<TransactionsPage />} />
+          <Route path="Notification" element={<NotificationPage />} />
+        </Route>
       </Routes>
-    </Router>
+    </BrowserRouter>
   );
 }
 

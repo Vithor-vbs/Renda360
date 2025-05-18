@@ -55,10 +55,10 @@ export const SidebarColumn: React.FC<Props> = ({ selected }) => (
         </div>
       </li>
       <li>
-        <div className={`sidebar-item ${selected === 'Net Worth' ? 'active' : ''}`}>
+        <Link to="/Notification" className={`sidebar-item ${selected === 'Notification' ? 'active' : ''}`}>
           <span className="sidebar-icon"><FaBell /></span>
           Notification
-        </div>
+        </Link>
       </li>
 </ul>
   </div>

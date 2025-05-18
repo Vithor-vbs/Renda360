@@ -1,0 +1,60 @@
+.notifications-wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: 1.5rem 2rem;
+}
+
+.notifications-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.notifications-header h2 {
+  color: #ffffff;
+  font-size: 1.6rem;
+  font-weight: 600;
+}
+
+.notifications-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.clear-button {
+  background-color: transparent;
+  border: 1px solid #f44336;
+  color: #f44336;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.clear-button:hover {
+  background-color: rgba(244, 67, 54, 0.1);
+}
+
+.notifications-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+.toggle-mode {
+  background-color: transparent;
+  border: 1px solid #00c896;
+  color: #00c896;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.toggle-mode:hover {
+  background-color: rgba(0, 200, 150, 0.1);
+}

@@ -1,0 +1,27 @@
+.notification-filter {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.filter-button {
+  background: transparent;
+  border: 1px solid #444;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  color: #eee;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.filter-button:hover {
+  background-color: #333;
+}
+
+.filter-button.selected {
+  background-color: #00c896;
+  color: #000;
+  border-color: #00c896;
+}

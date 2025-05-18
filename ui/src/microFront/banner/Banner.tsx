@@ -6,7 +6,11 @@ import { IconButton } from '../iconButton/IconButton';
 import settingsIcon from '../../assets/settings.svg';
 import notificationIcon from '../../assets/notification.svg';
 
-const Banner: React.FC = () => {
+interface BannerProps {
+  onNotificationHover: (hovering: boolean) => void;
+}
+
+const Banner: React.FC<BannerProps> = ({ onNotificationHover }) => {
   return (
     <div className="banner-container">
       <div className="banner-left">
@@ -15,12 +19,17 @@ const Banner: React.FC = () => {
       </div>
 
       <div className="banner-buttons">
-        <IconButton
-          className="notification-button"
-          src={notificationIcon}
-          alt="notification"
-          onClick={() => {}}
-        />
+        <div
+          onMouseEnter={() => onNotificationHover(true)}
+          onMouseLeave={() => onNotificationHover(false)}
+        >
+          <IconButton
+            className="notification-button"
+            src={notificationIcon}
+            alt="notification"
+            onClick={() => {}}
+          />
+        </div>
         <IconButton
           className="settings-button"
           src={settingsIcon}

@@ -1,0 +1,79 @@
+.notification-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background-color: #1f1f1f;
+  border-radius: 10px;
+  padding: 16px 20px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  transition: background 0.2s ease;
+  color: #f1f1f1;
+}
+
+.notification-card:hover {
+  background-color: #2c2c2c;
+}
+
+.notification-icon-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+}
+
+.notification-icon {
+  font-size: 24px;
+}
+
+.notification-icon.critical {
+  color: #ff4d4f;
+}
+
+.notification-icon.income {
+  color: #4caf50;
+}
+
+.notification-icon.expense {
+  color: #f44336;
+}
+
+.notification-content {
+  flex: 1;
+}
+
+.notification-message {
+  font-weight: 600;
+  font-size: 1rem;
+  margin: 0;
+}
+
+.notification-category {
+  font-size: 0.85rem;
+  color: #aaa;
+  margin: 4px 0;
+}
+
+.notification-timestamp {
+  font-size: 0.75rem;
+  color: #666;
+}
+
+.notification-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.new-tag {
+  background-color: #00c896;
+  color: #000;
+  font-size: 0.65rem;
+  font-weight: bold;
+  padding: 2px 6px;
+  border-radius: 6px;
+  margin-left: 8px;
+}
+
+.notification-card {
+  cursor: pointer;
+}
