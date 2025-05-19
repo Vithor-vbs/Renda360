@@ -1,6 +1,6 @@
 // NotificationCard.tsx
 import React from "react";
-import "./NotificationCards.css";
+import "./notificationCards.css";
 import { FiAlertCircle } from "react-icons/fi";
 import { FaArrowDown, FaArrowUp } from "react-icons/fa";
 
