@@ -49,9 +49,11 @@
 
 .sidebar-item.active,
 .sidebar-item.active .sidebar-link {
-  background-color: #1EA896;
+  background-color: #167A6B;
   color: white;
   border-radius: 0.5rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transform: scale(1.05);
 }
 
 

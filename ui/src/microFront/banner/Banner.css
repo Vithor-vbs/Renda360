@@ -77,3 +77,16 @@
     justify-content: flex-start;
   }
 }
+
+.account-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.client-name {
+  color: #1EA896;
+  white-space: nowrap;
+  font-family: 'Roboto', sans-serif;
+  font-weight: bold;
+}
