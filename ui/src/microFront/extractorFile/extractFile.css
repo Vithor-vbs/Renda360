@@ -1,0 +1,60 @@
+.extract-file-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.extract-download-card {
+  background: #1e1e1e;
+  color: #fff;
+  padding: 2rem;
+  border-radius: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.extract-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.extract-card-header .icon {
+  width: 36px;
+  height: 36px;
+  margin-right: 1rem;
+  color: #4ade80;
+}
+
+.extract-card-header .info h2 {
+  font-size: 1.25rem;
+  margin: 0;
+}
+
+.extract-card-header .info p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #aaa;
+}
+
+.download-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: #4ade80;
+  color: black;
+  font-weight: 600;
+}
+
+.extract-grid-card {
+  background: #1e1e1e;
+  color: #fff;
+  border-radius: 1rem;
+  overflow: hidden;
+}
+
+.table-wrapper {
+  overflow-x: auto;
+  padding: 1rem;
+}

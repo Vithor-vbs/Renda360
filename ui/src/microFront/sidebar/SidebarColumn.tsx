@@ -56,7 +56,8 @@ export const SidebarColumn: React.FC<Props> = ({ selected }) => (
         </div>
       </li> */}
       <li>
-        <div
+        <Link
+          to="/extractor  "
           className={`sidebar-item ${
             selected === "Doc Extractor" ? "active" : ""
           }`}
@@ -65,7 +66,7 @@ export const SidebarColumn: React.FC<Props> = ({ selected }) => (
             <FaUniversity />
           </span>
           Extrator de Faturas
-        </div>
+        </Link>
       </li>
       <li>
         <div

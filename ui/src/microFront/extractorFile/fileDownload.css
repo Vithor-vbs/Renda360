@@ -1,0 +1,66 @@
+:root {
+  --green-brand: #1cc5aa; 
+}
+
+.file-download-card {
+  background: #1a1a1a;
+  color: #ffffff;
+  padding: 2rem;
+  border-radius: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  border: 1px solid #3a3a3a;
+}
+
+.file-download-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.file-download-icon {
+  width: 40px;
+  height: 40px;
+  color: var(--green-brand);
+}
+
+.file-download-info {
+  flex: 1;
+}
+
+.file-download-info h2 {
+  font-size: 1.5rem;
+  margin: 0;
+  font-weight: 600;
+}
+
+.file-download-info p {
+  margin: 0.25rem 0 0;
+  font-size: 0.95rem;
+  color: #b0b0b0;
+}
+
+.file-download-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background-color: var(--green-brand);
+  color: #000;
+  font-weight: 600;
+  padding: 0.6rem 1.4rem;
+  border-radius: 12px;
+  font-size: 1rem;
+  transition: background-color 0.2s ease;
+}
+
+.file-download-button svg {
+  color: #000; 
+  width: 18px;
+  height: 18px;
+}
+
+.file-download-button:hover {
+  background-color: #15aa94;
+}

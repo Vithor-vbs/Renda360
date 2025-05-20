@@ -4,6 +4,7 @@ import AppLayout from './components/layout/AppLayout';
 import { Home } from './microFront/home';
 import TransactionsPage from './microFront/transactions/TransactionsPage';
 import NotificationPage from './microFront/notification/NotificationPage';
+import ExtractFilePage from './microFront/extractorFile/ExtractFilePage';
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
         <Route path="/home" element={<Home />} />
         <Route path="/transactions" element={<TransactionsPage />} />
         <Route path="/notification" element={<NotificationPage />} />
+        <Route path="/extractor" element={<ExtractFilePage />} />
       </Route>
       </Routes>
     </BrowserRouter>

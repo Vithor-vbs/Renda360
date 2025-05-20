@@ -1,0 +1,17 @@
+.extractor-file-page-container {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 100vh;
+  overflow: hidden;
+  background: #292929;
+}
+
+.extractor-file-page-main {
+  flex: 1;
+  display: flex;
+  padding: 0 2rem;
+  gap: 2rem;
+  margin-bottom: 3rem;
+  overflow: hidden;
+}
