@@ -3,6 +3,8 @@ import { DashboardHeader } from "../dashboardheader/DashboardHeader";
 import { BalancesRow } from "../balancesrow/BalancesRow";
 import "./Mainboard.css";
 import { PieChartComponent } from "@/components/PieChartComponent";
+import { LineGraph } from "@/components/LineGraph";
+
 // import { LineGraph } from '@/components/LineGraph'
 
 export const MainBoard: React.FC = () => (
@@ -10,7 +12,7 @@ export const MainBoard: React.FC = () => (
     <DashboardHeader />
     <BalancesRow />
     <PieChartComponent />
-    {/* <LineGraph /> */}
+    <LineGraph />
     {/* outros blocos virão aqui */}
   </div>
 );

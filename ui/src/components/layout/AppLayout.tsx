@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Outlet, useNavigate } from 'react-router-dom';
+import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { SidebarColumn } from '../../microFront/sidebar/SidebarColumn';
 import Banner from '../../microFront/banner/Banner';
 import NotificationPopup from '../../microFront/notification/NotificationPopup';
@@ -14,6 +14,7 @@ const AppLayout: React.FC = () => {
   const [hovering, setHovering] = useState(false);
   const [notifications, setNotifications] = useState(mockNotifications);
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleClose = () => {
     setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
@@ -23,11 +24,10 @@ const AppLayout: React.FC = () => {
 
   return (
     <div className="app-layout-wrapper">
-        
-      <Banner onNotificationHover={setHovering} />
+      <Banner onNotificationHover={setHovering} clientName='Username' />
       <div className="app-layout-body">
         <div className="app-layout-sideBar">
-        <SidebarColumn selected="" />
+          <SidebarColumn selected={location.pathname} />
         </div>
         <div className="app-layout-content">
           {hovering && (

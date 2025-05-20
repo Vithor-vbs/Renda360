@@ -1,4 +1,3 @@
-// SidebarColumn.tsx
 import React from "react";
 import "./SidebarColumn.css";
 import { LuLayoutDashboard, LuCreditCard } from "react-icons/lu";
@@ -22,7 +21,7 @@ export const SidebarColumn: React.FC<Props> = ({ selected }) => (
       <li>
         <Link
           to="/home"
-          className={`sidebar-item ${selected === "Dashboard" ? "active" : ""}`}
+          className={`sidebar-item ${selected === "/home" ? "active" : ""}`}
         >
           <span className="sidebar-icon">
             <LuLayoutDashboard />
@@ -34,7 +33,7 @@ export const SidebarColumn: React.FC<Props> = ({ selected }) => (
         <Link
           to="/transactions"
           className={`sidebar-item ${
-            selected === "Transactions" ? "active" : ""
+            selected === "/transactions" ? "active" : ""
           }`}
         >
           <span className="sidebar-icon">
@@ -43,23 +42,11 @@ export const SidebarColumn: React.FC<Props> = ({ selected }) => (
           Transações
         </Link>
       </li>
-      {/* <li>
-        <div className={`sidebar-item ${selected === 'Net Worth' ? 'active' : ''}`}>
-          <span className="sidebar-icon"><FaChartPie /></span>
-          Net Worth
-        </div>
-      </li>
-      <li>
-        <div className={`sidebar-item ${selected === 'Budget' ? 'active' : ''}`}>
-          <span className="sidebar-icon"><FaWallet /></span>
-          Budget
-        </div>
-      </li> */}
       <li>
         <Link
           to="/extractor  "
           className={`sidebar-item ${
-            selected === "Doc Extractor" ? "active" : ""
+            selected === "/doc-extractor" ? "active" : ""
           }`}
         >
           <span className="sidebar-icon">
@@ -70,7 +57,7 @@ export const SidebarColumn: React.FC<Props> = ({ selected }) => (
       </li>
       <li>
         <div
-          className={`sidebar-item ${selected === "JuliusAI" ? "active" : ""}`}
+          className={`sidebar-item ${selected === "/julius-ai" ? "active" : ""}`}
         >
           <span className="sidebar-icon">
             <FaUserTie />
@@ -78,15 +65,14 @@ export const SidebarColumn: React.FC<Props> = ({ selected }) => (
           Julius IA
         </div>
       </li>
-      {/* <li>
-        <div className={`sidebar-item ${selected === 'Action Plan' ? 'active' : ''}`}>
-          <span className="sidebar-icon"><FaTasks /></span>
-          Action Plan
-        </div>
-      </li> */}
       <li>
-        <Link to="/Notification" className={`sidebar-item ${selected === 'Notification' ? 'active' : ''}`}>
-          <span className="sidebar-icon"><FaBell /></span>
+        <Link
+          to="/notification"
+          className={`sidebar-item ${selected === "/notification" ? "active" : ""}`}
+        >
+          <span className="sidebar-icon">
+            <FaBell />
+          </span>
           Notificações
         </Link>
       </li>

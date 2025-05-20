@@ -7,9 +7,8 @@
   border-radius: 2rem;
   margin: 1rem;
   padding: 0.5rem 1rem;
-  flex-wrap: wrap; 
+  flex-wrap: wrap;
   gap: 1rem;
-  
 }
 
 .banner-left {
@@ -20,10 +19,7 @@
 }
 
 .banner-image {
-  height: 2.5rem;
-  width: 2.5rem;
-  background-color: #1EA896;
-  border-radius: 9999px;
+  height: 4rem;
 }
 
 .account-image {
@@ -50,7 +46,7 @@
 .notification-button,
 .settings-button {
   background-color: transparent;
-  border: 1px solid #ECECED;
+  border: 1px solid #ececed;
   border-radius: 9999px;
   padding: 0.4rem;
   width: 2rem;
@@ -80,4 +76,17 @@
   .banner-buttons {
     justify-content: flex-start;
   }
+}
+
+.account-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.client-name {
+  color: #1EA896;
+  white-space: nowrap;
+  font-family: 'Roboto', sans-serif;
+  font-weight: bold;
 }
