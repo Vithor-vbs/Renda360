@@ -1,10 +1,10 @@
-import React from 'react';
-import './Banner.css';
-import logo from '../../assets/renda360logo.png';
-import accountIcon from '../../assets/account.png';
-import { IconButton } from '../iconButton/IconButton';
-import settingsIcon from '../../assets/settings.svg';
-import notificationIcon from '../../assets/notification.svg';
+import React from "react";
+import "./Banner.css";
+import logo from "../../assets/logo_with_name.png";
+import accountIcon from "../../assets/account.png";
+import { IconButton } from "../iconButton/IconButton";
+import settingsIcon from "../../assets/settings.svg";
+import notificationIcon from "../../assets/notification.svg";
 
 interface BannerProps {
   onNotificationHover: (hovering: boolean) => void;
@@ -15,7 +15,6 @@ const Banner: React.FC<BannerProps> = ({ onNotificationHover }) => {
     <div className="banner-container">
       <div className="banner-left">
         <img className="banner-image" src={logo} alt="Renda360" />
-        <h1 className="banner-title">Renda 360</h1>
       </div>
 
       <div className="banner-buttons">
