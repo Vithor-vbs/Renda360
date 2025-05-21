@@ -3,9 +3,9 @@
   align-items: center;
   justify-content: space-between;
   min-height: 64px;
-  background-color: #2e3137;
+  background-color: #292929;
   border-radius: 2rem;
-  margin: 1rem;
+  margin: 1rem 1rem 2rem 1rem;
   padding: 0.5rem 1rem;
   flex-wrap: wrap;
   gap: 1rem;
@@ -85,8 +85,8 @@
 }
 
 .client-name {
-  color: #1EA896;
+  color: #1ea896;
   white-space: nowrap;
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   font-weight: bold;
 }

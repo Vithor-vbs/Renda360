@@ -1,163 +1,162 @@
 .sidebarchat-column {
-    width: 30rem;
-    background-color: #2e3137;
-    border-radius: 25px;
-    padding: 1rem;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    transition: background-color 0.3s ease;
-    max-height: 80vh;
+  width: 30rem;
+  background-color: #292929;
+  border-radius: 25px;
+  padding: 1rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease;
+  max-height: 80vh;
 }
 
 .sidebarchat-header {
-    display: flex;
-    height: 120px;
-    border-bottom: 1px solid #1EA896;
-    align-items: center;
-    justify-content: center;
-    background-color: #2b2e33;
-    border-radius: 25px 25px 0 0;
-    transition: background-color 0.3s ease;
+  display: flex;
+  height: 120px;
+  border-bottom: 1px solid #1ea896;
+  align-items: center;
+  justify-content: center;
+  border-radius: 25px 25px 0 0;
+  transition: background-color 0.3s ease;
 }
 
 .sidebarchat-logo {
-    height: 60px;
-    transition: transform 0.3s ease;
+  height: 60px;
+  transition: transform 0.3s ease;
 }
 
 .sidebarchat-content {
-    margin-top: 2rem;
-    background-color: #32363d;
-    border-radius: 30px 30px 30px 30px;
-    border-bottom: #1EA896 solid 1px;
-    padding: 15px;
-    overflow-y: scroll;
-    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
-    transition: background-color 0.3s ease;
-    max-height: 50vh;
+  margin-top: 2rem;
+  /* background-color: #1e1e1e; */
+  border-radius: 30px 30px 30px 30px;
+  /* border-bottom: #1ea896 solid 1px; */
+  padding: 15px;
+  overflow-y: scroll;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease;
+  max-height: 50vh;
 }
 
 @media (max-width: 1920px) {
-    .sidebarchat-content {
-        max-height: 40vh;
-    }
+  .sidebarchat-content {
+    max-height: 40vh;
+  }
 }
 
 .sidebarchat-content::-webkit-scrollbar {
-    width: 8px;
+  width: 8px;
 }
 
 .sidebarchat-content::-webkit-scrollbar-track {
-    background: #2e3137;
-    border-radius: 10px;
+  background: #2e3137;
+  border-radius: 10px;
 }
 
 .sidebarchat-content::-webkit-scrollbar-thumb {
-    background-color: #1EA896;
-    border-radius: 10px;
-    border: 2px solid #32363d;
+  background-color: #1ea896;
+  border-radius: 10px;
+  border: 2px solid #32363d;
 }
 
 .sidebarchat-content {
-    scrollbar-width: thin;
-    scrollbar-color: #1EA896 #2e3137;
+  scrollbar-width: thin;
+  scrollbar-color: #1ea896 #2e3137;
 }
 
 .sidebarchat-label {
-    color: #ffff;
-    margin-bottom: 10rem;
+  color: #ffff;
+  margin-bottom: 10rem;
 }
 
 .sidebarchat-footer {
-    display: flex;
-    align-items: center;
-    padding: 0.5rem;
-    background-color: #2d2d2d;
-    border-radius: 10px;
-    border: 1px solid rgb(63, 63, 63);
-    margin-top: 2rem;
-    box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  padding: 0.5rem;
+  background-color: #2d2d2d;
+  border-radius: 10px;
+  border: 1px solid rgb(63, 63, 63);
+  margin-top: 2rem;
+  box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .sidebarchat-footer:focus-within {
-    border: 1px solid #1EA896;
+  border: 1px solid #1ea896;
 }
 
 .fileUploadWrapper {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-right: 10px;
-    color: #ffff;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 10px;
+  color: #ffff;
 }
 
 .fileUploadWrapper label {
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
 }
 
 .fileUploadWrapper label svg {
-    color: #ffff;
+  color: #ffff;
 }
 
 .fileUploadWrapper .tooltip {
-    position: absolute;
-    top: -40px;
-    display: none;
-    opacity: 0;
-    color: #ffff;
-    font-size: 10px;
-    background-color: #000;
-    padding: 6px 10px;
-    border: 1px solid #3c3c3c;
-    border-radius: 5px;
-    box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.596);
-    transition: all 0.3s;
+  position: absolute;
+  top: -40px;
+  display: none;
+  opacity: 0;
+  color: #ffff;
+  font-size: 10px;
+  background-color: #000;
+  padding: 6px 10px;
+  border: 1px solid #3c3c3c;
+  border-radius: 5px;
+  box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.596);
+  transition: all 0.3s;
 }
 
 .fileUploadWrapper label:hover .tooltip {
-    display: block;
-    opacity: 1;
+  display: block;
+  opacity: 1;
 }
 
 .sidebarchat-textarea {
-    width: 100%;
-    height: 70px;
-    background-color: transparent;
-    outline: none;
-    border: none;
-    padding: 10px;
-    color: white;
-    resize: none;
-    font-size: 1rem;
-    line-height: 1.5;
-    overflow-y: auto;
+  width: 100%;
+  height: 70px;
+  background-color: transparent;
+  outline: none;
+  border: none;
+  padding: 10px;
+  color: white;
+  resize: none;
+  font-size: 1rem;
+  line-height: 1.5;
+  overflow-y: auto;
 }
 
 .sidebarchat-textarea::placeholder {
-    color: #b0b3b8;
+  color: #b0b3b8;
 }
 
 .sendButton {
-    background-color: transparent;
-    border: none;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-left: 10px;
-    color: white; 
-    transition: all 0.3s;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 10px;
+  color: white;
+  transition: all 0.3s;
 }
 
 .sendButton svg {
-    color: white; 
+  color: white;
 }
 
 .sendButton:hover svg {
-    fill: #1EA896;
-    stroke: white;
+  fill: #1ea896;
+  stroke: white;
 }

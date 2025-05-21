@@ -1,5 +1,5 @@
-import React from 'react'
-import './BalancesRow.css'
+import React from "react";
+import "./BalancesRow.css";
 
 export const BalancesRow: React.FC = () => (
   <div className="balances-row">
@@ -16,4 +16,4 @@ export const BalancesRow: React.FC = () => (
       <span className="card-value">$5,000</span>
     </div>
   </div>
-)
+);

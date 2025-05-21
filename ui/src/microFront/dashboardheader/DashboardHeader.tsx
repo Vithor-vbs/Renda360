@@ -1,10 +1,10 @@
-import React from 'react';
-import './DashboardHeader.css'
-
-
+import React from "react";
+import "./DashboardHeader.css";
+import { Button } from "../button/Button";
+import ButtonDate from "../buttonDate/buttonDate";
 
 export const DashboardHeader: React.FC = () => (
-    <div className="dashboard-header">
+  <div className="dashboard-header">
     <div className="header-text">
       <h1 className="header-title">Dashboard</h1>
       <p className="header-subtitle">
@@ -14,7 +14,7 @@ export const DashboardHeader: React.FC = () => (
 
     <div className="header-actions">
       <button className="widget-button">+ Add widget</button>
-      <button className="date-button">May 01 – May 15</button>
+      <ButtonDate />
     </div>
   </div>
 );

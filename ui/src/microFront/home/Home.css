@@ -4,7 +4,8 @@
   flex: 1;
   min-height: 100vh;
   overflow: hidden;
-  background: #292929;
+
+  background-color: #1e1e1e;
 }
 
 .home-content {
@@ -16,7 +17,7 @@
 .home-main {
   flex: 1;
   display: flex;
-  padding: 0 2rem;
+  /* padding: 0 2rem; */
   gap: 2rem;
   margin-bottom: 3rem;
   overflow: hidden;
@@ -30,4 +31,3 @@
 .home-description {
   font-size: 1.2rem;
 }
-

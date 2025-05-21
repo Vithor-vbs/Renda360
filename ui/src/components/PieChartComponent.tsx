@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { Label, Pie, PieChart } from "recharts"
+import * as React from "react";
+import { Label, Pie, PieChart } from "recharts";
 
 import {
   Card,
@@ -9,21 +9,21 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from "@/components/ui/card";
 import {
   ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-} from "@/components/ui/chart"
+} from "@/components/ui/chart";
 
 const chartData = [
-    { browser: "Utilidade", visitors: 275, fill: "#1EA896" },
-    { browser: "Alimentação", visitors: 200, fill: "#5e60b6" },
-    { browser: "Transporte", visitors: 287, fill: "#8b4092" },
-    { browser: "Aluguel", visitors: 173, fill: "#009cae" },
-    { browser: "other", visitors: 190, fill: "#AAAAAA" },
-  ]
+  { browser: "Utilidade", visitors: 275, fill: "#1EA896" },
+  { browser: "Alimentação", visitors: 200, fill: "#5e60b6" },
+  { browser: "Transporte", visitors: 287, fill: "#8b4092" },
+  { browser: "Aluguel", visitors: 173, fill: "#009cae" },
+  { browser: "other", visitors: 190, fill: "#AAAAAA" },
+];
 
 const chartConfig = {
   visitors: {
@@ -49,15 +49,23 @@ const chartConfig = {
     label: "Other",
     color: "hsl(var(--chart-5))",
   },
-} satisfies ChartConfig
+} satisfies ChartConfig;
 
 export function PieChartComponent() {
   const totalVisitors = React.useMemo(() => {
-    return chartData.reduce((acc, curr) => acc + curr.visitors, 0)
-  }, [])
+    return chartData.reduce((acc, curr) => acc + curr.visitors, 0);
+  }, []);
 
   return (
-<Card className="flex flex-col mt-8" style={{ backgroundColor: '#2e3137', maxWidth: '20vw' }}>
+    <Card
+      className="flex flex-col mt-8"
+      style={{
+        backgroundColor: "#292929",
+        borderColor: "#292929",
+        boxShadow: "0 4px 12px rgba(0, 0, 0, 0.3)",
+        maxWidth: "20vw",
+      }}
+    >
       <CardHeader className="items-center pb-0">
         <CardTitle className="text-[#ffff]">Gráfico Categorias</CardTitle>
         <CardDescription>January - June 2024</CardDescription>
@@ -92,7 +100,7 @@ export function PieChartComponent() {
                         <tspan
                           x={viewBox.cx}
                           y={viewBox.cy}
-                          className="fill-[#ff006e] text-3xl font-bold"
+                          className="fill-[#fff] text-3xl font-bold"
                         >
                           {totalVisitors.toLocaleString()}
                         </tspan>
@@ -104,7 +112,7 @@ export function PieChartComponent() {
                           Gasto
                         </tspan>
                       </text>
-                    )
+                    );
                   }
                 }}
               />
@@ -113,5 +121,5 @@ export function PieChartComponent() {
         </ChartContainer>
       </CardContent>
     </Card>
-  )
+  );
 }

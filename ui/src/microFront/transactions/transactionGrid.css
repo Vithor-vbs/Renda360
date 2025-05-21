@@ -1,7 +1,7 @@
 .transaction-grid {
   flex: 1;
   padding: 2rem;
-  background-color: #1e1e1e;
+  background-color: #292929;
   border-radius: 1rem;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
   color: #f4f4f5;
@@ -36,7 +36,7 @@
 }
 
 .transaction-table tbody tr {
-  background-color: #2a2a2a;
+  background-color: #1e1e1e;
   border-radius: 0.75rem;
   transition: background 0.2s ease;
 }
