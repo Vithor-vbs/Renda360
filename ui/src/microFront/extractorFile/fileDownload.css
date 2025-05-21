@@ -1,14 +1,14 @@
 :root {
-  --green-brand: #1cc5aa; 
+  --green-brand: #1cc5aa;
 }
 
 .file-download-card {
-  background: #1a1a1a;
+  background: #292929;
   color: #ffffff;
   padding: 2rem;
   border-radius: 20px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
-  border: 1px solid #3a3a3a;
+  border: none;
 }
 
 .file-download-header {
@@ -56,7 +56,7 @@
 }
 
 .file-download-button svg {
-  color: #000; 
+  color: #000;
   width: 18px;
   height: 18px;
 }

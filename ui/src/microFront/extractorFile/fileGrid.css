@@ -1,20 +1,21 @@
 :root {
   --green-brand: #1cc5aa;
-  --pdf-color: #8b2c2c;    
-  --excel-color: #2c56a4;  
+  --pdf-color: #8b2c2c;
+  --excel-color: #2c56a4;
   --pill-text: #f4f4f4;
-  --grid-bg: #232323;
+  --grid-bg: #1e1e1e;
 }
 
 .file-grid-modern {
-  background: #1a1a1a;
+  background: #292929;
   padding: 1.5rem;
   border-radius: 1.25rem;
-  border: 1px solid #2d2d2d;
+  border: none;
   color: #fff;
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 .file-grid-title {
@@ -42,7 +43,7 @@
 }
 
 .file-grid-row:hover {
-  background: #2a2a2a;
+  background: #212121;
 }
 
 .file-pill {
@@ -125,10 +126,9 @@
 }
 
 .file-action.view {
-  background-color: #3b82f6; 
+  background-color: #3b82f6;
 }
 
 .file-action.view:hover {
   background-color: #2563eb;
 }
-
