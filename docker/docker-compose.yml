@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: renda360_db
+    environment:
+      POSTGRES_DB: renda360
+      POSTGRES_USER: renda360_user
+      POSTGRES_PASSWORD: renda360_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./create_database_renda360.sql:/docker-entrypoint-initdb.d/create_database_renda360.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U renda360_user -d renda360"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data: 
