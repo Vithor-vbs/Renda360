@@ -14,13 +14,14 @@ interface BannerProps {
 const Banner: React.FC<BannerProps> = ({ onNotificationHover, clientName }) => {
   return (
     <div className="banner-container">
-      <div className="banner-left">
+      <a href="/" className="banner-left">
         <img className="banner-image" src={logo} alt="Renda360" />
-      </div>
+      </a>
 
       <div className="banner-buttons">
+        <span className="client-name">{clientName}</span>{" "}
         <div className="account-info">
-          <span className="client-name">{clientName}</span> {/* Exibe o nome do cliente */}
+          {/* Exibe o nome do cliente */}
           <img className="account-image" src={accountIcon} alt="Renda360" />
         </div>
         <div
