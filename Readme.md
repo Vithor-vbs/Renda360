@@ -2,7 +2,8 @@
 
 ## System Overview
 
-![alt text](image.png)
+![image](https://github.com/user-attachments/assets/86b9125f-74b1-4588-a88e-9d052dac1c36)
+
 
 - React frontend
 - Flask backend API
