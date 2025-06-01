@@ -25,7 +25,7 @@ const Banner: React.FC<BannerProps> = ({ onNotificationHover, clientName }) => {
         </div>
         <div className="account-info">
           {/* Exibe o nome do cliente */}
-          <img className="account-image" src={accountIcon} alt="Renda360" />
+          <img className="settings-button" src={accountIcon} alt="Renda360" />
         </div>
         <div
           onMouseEnter={() => onNotificationHover(true)}

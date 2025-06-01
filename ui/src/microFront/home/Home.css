@@ -18,6 +18,7 @@
   flex: 1;
   display: flex;
   /* padding: 0 2rem; */
+  margin-left: 14rem;
   gap: 2rem;
   margin-bottom: 3rem;
   overflow: hidden;

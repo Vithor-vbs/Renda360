@@ -1,11 +1,13 @@
 .sidebar-column {
+  position: fixed;
+  top: 8rem;
+  left: 1rem;
   width: 14rem;
-  background-color: #1EA896;
+  background-color: #1ea896;
   border-radius: 25px;
   padding: 1rem;
-  height: 100vh;
-  position: sticky;
-  top: 0;
+  height: 40rem;
+  z-index: 99;
 }
 
 .sidebar-list {
@@ -49,11 +51,9 @@
 
 .sidebar-item.active,
 .sidebar-item.active .sidebar-link {
-  background-color: #167A6B;
+  background-color: #167a6b;
   color: white;
   border-radius: 0.5rem;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   transform: scale(1.05);
 }
-
-

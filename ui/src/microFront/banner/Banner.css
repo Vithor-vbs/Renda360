@@ -1,14 +1,23 @@
 .banner-container {
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  right: 1rem;
+  z-index: 100;
   display: flex;
   align-items: center;
   justify-content: space-between;
   min-height: 64px;
-  background-color: #292929;
+  background-color: rgba(41, 41, 41, 0.85);
   border-radius: 2rem;
-  margin: 1rem 1rem 2rem 1rem;
   padding: 0.5rem 1rem;
   flex-wrap: wrap;
   gap: 1rem;
+  box-sizing: border-box;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px); /* For Safari support */
+
+  box-shadow: 0 0px 32px 0 rgba(0, 0, 0, 0.3), 0 2px 8px 0 rgba(0, 0, 0, 0.15);
 }
 
 .banner-left {
@@ -23,9 +32,9 @@
 }
 
 .account-image {
-  height: 1.7rem;
-  width: 1.7rem;
-  border-radius: 9999px;
+  height: 1.9rem;
+  /* width: 1.7rem; */
+  border-radius: 50%;
 }
 
 .banner-title {

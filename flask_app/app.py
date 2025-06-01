@@ -44,7 +44,7 @@ jwt = JWTManager(app)
 
 # Register blueprints
 app.register_blueprint(auth_bp)
-app.register_blueprint("/users", user_bp)
+app.register_blueprint(user_bp, url_prefix='/users')
 app.register_blueprint(statements_bp)
 
 if __name__ == '__main__':
