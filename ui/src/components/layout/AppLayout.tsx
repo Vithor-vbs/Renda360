@@ -34,12 +34,13 @@ const AppLayout: React.FC = () => {
   };
 
   const { loggedUser, loading } = useAuth();
+  console.log("Logged user:", loggedUser);
 
   return (
     <div className="app-layout-wrapper">
       <Banner
         onNotificationHover={setHovering}
-        clientName={loading ? "" : loggedUser ?? ""}
+        clientName={loading ? "" : loggedUser?.username ?? ""}
       />
       <div className="app-layout-body">
         <div className="app-layout-sideBar">

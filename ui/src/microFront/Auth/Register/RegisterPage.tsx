@@ -23,10 +23,12 @@ const RegisterPage = () => {
       });
 
       // redirect to login after successful registration
-      notifySuccess("Registration successful! Please log in.");
+      notifySuccess(
+        "Registro realizado com sucesso! Faça login para continuar."
+      );
       navigate("/login", { state: { registrationSuccess: true } });
     } catch (err) {
-      notifyError("Registration failed. User may already exist.");
+      notifyError("Erro ao registrar, verifique os dados fornecidos");
       console.error("Registration error:", err);
     }
   };

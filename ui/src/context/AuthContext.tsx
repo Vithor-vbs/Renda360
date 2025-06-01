@@ -4,7 +4,7 @@ import axios from "../api/axios";
 type AuthContextType = {
   isAuthenticated: boolean;
   loading: boolean;
-  loggedUser: string | null;
+  loggedUser: User | null;
   login: (access_token: string, refresh_token: string) => Promise<boolean>;
   logout: () => void;
   refreshToken: () => Promise<boolean>;
@@ -19,33 +19,49 @@ const AuthContext = createContext<AuthContextType>({
   refreshToken: async () => false,
 });
 
+interface User {
+  id: string;
+  username: string;
+  email: string;
+}
+
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [loggedUser, setLoggedUser] = useState<string | null>(null);
+  const [loggedUser, setLoggedUser] = useState<User | null>(null);
 
-  useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const token = localStorage.getItem("access_token");
-        if (!token) {
-          setIsAuthenticated(false);
-          setLoading(false);
-          return;
-        }
-        const fetchLoggedUser = await axios.get("/protected", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        setIsAuthenticated(true);
-        setLoggedUser(fetchLoggedUser.data.logged_in_as);
-      } catch (error) {
+  const checkAuth = async () => {
+    try {
+      const token = localStorage.getItem("access_token");
+      if (!token) {
         setIsAuthenticated(false);
-      } finally {
         setLoading(false);
+        return;
       }
-    };
+      console.log("Token being sent to /protected:", token);
+      // Get user id from /protected
+      const fetchLoggedUser = await axios.get("/protected", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const userId = fetchLoggedUser.data.logged_user_id;
+      // Fetch full user object
+      const userResponse = await axios.get(`/users/${userId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setIsAuthenticated(true);
+      setLoggedUser(userResponse.data);
+    } catch (error) {
+      setIsAuthenticated(false);
+      setLoggedUser(null);
+    } finally {
+      setLoading(false);
+    }
+  };
+  useEffect(() => {
     checkAuth();
   }, []);
 
@@ -59,6 +75,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       localStorage.setItem("access_token", access_token);
       localStorage.setItem("refresh_token", refresh_token);
       setIsAuthenticated(true);
+      await checkAuth();
       return true;
     } catch (error) {
       console.error("Login failed:", error);

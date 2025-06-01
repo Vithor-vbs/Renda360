@@ -22,14 +22,14 @@ const LoginPage = () => {
       const { access_token, refresh_token } = response.data;
       const success = await login(access_token, refresh_token);
       if (!success) {
-        notifyError("Login failed, tokens not received");
+        notifyError("Login falhou, tokens não recebidos");
         console.error("Login failed, tokens not received");
         return;
       }
       console.log("Login response:", response.data);
       navigate("/home", { state: { registrationSuccess: true } });
     } catch (err) {
-      notifyError("Invalid email or password");
+      notifyError("Erro ao fazer login, verifique suas credenciais");
       console.error("Login error:", err);
     }
   };

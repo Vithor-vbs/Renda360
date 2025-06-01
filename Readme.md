@@ -4,7 +4,6 @@
 
 ![image](https://github.com/user-attachments/assets/86b9125f-74b1-4588-a88e-9d052dac1c36)
 
-
 - React frontend
 - Flask backend API
 - PostgreSQL database
@@ -100,6 +99,16 @@ npm run dev
 
 ```bash
 docker-compose logs db
+```
+
+**Enter Inside Postgres Container**
+
+```
+docker exec -it <container_id> bash
+```
+
+```
+psql -U renda_user -d renda360
 ```
 
 **Flask Migration Problems**
