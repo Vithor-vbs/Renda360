@@ -1,5 +1,8 @@
 .sidebar-column {
   position: fixed;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   top: 8rem;
   left: 1rem;
   width: 14rem;
@@ -56,4 +59,8 @@
   border-radius: 0.5rem;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   transform: scale(1.05);
+}
+
+.sidebar-logout:hover {
+  color: #ff4d4f !important;
 }
