@@ -5,6 +5,8 @@ import { Link } from "react-router-dom";
 import { FaUniversity, FaBell, FaSignOutAlt } from "react-icons/fa";
 import { MdAutoAwesome } from "react-icons/md";
 import { useAuth } from "../../context/AuthContext"; // Adjust path if needed
+import { Temperature } from "../temperature/Temperature";
+
 
 interface Props {
   selected?: string;
@@ -77,6 +79,7 @@ export const SidebarColumn: React.FC<Props> = ({ selected }) => {
             </span>
             Notificações
           </Link>
+      < Temperature />
         </li>
       </ul>
       <button
