@@ -3,4 +3,10 @@
     display: flex;
     flex-direction: column;
   }
+
+.charts-and-goals {
+  display: flex;
+  gap: 2rem;
+  align-items: flex-start;
+}
   

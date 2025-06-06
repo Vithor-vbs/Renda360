@@ -18,11 +18,11 @@ import {
 } from "@/components/ui/chart";
 
 const chartData = [
-  { browser: "Utilidade", visitors: 275, fill: "#1EA896" },
-  { browser: "Alimentação", visitors: 200, fill: "#5e60b6" },
-  { browser: "Transporte", visitors: 287, fill: "#8b4092" },
-  { browser: "Aluguel", visitors: 173, fill: "#009cae" },
-  { browser: "other", visitors: 190, fill: "#AAAAAA" },
+  { browser: "Utilidade",  visitors: 275, fill: "#008236" },
+  { browser: "Alimentação", visitors: 200, fill: "#6E11B0" },
+  { browser: "Transporte",  visitors: 287, fill: "#7BF1A8" },
+  { browser: "Aluguel",     visitors: 173, fill: "#5EF72D" },
+  { browser: "other",       visitors: 190, fill: "#AD46FF" },
 ];
 
 const chartConfig = {
@@ -68,7 +68,7 @@ export function PieChartComponent() {
     >
       <CardHeader className="items-center pb-0">
         <CardTitle className="text-[#ffff]">Gráfico Categorias</CardTitle>
-        <CardDescription>January - June 2024</CardDescription>
+        <CardDescription style={{color: "#cccccc"}}>Mostra os gastos por categoria nos ultimos 30 dias.</CardDescription>
       </CardHeader>
       <CardContent className="flex-1 pb-0">
         <ChartContainer
@@ -108,6 +108,7 @@ export function PieChartComponent() {
                           x={viewBox.cx}
                           y={(viewBox.cy || 0) + 24}
                           className="fill-muted-foreground"
+                          style={{fill: "darkgrey"}}
                         >
                           Gasto
                         </tspan>

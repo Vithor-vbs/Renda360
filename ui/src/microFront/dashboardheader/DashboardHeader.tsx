@@ -1,6 +1,5 @@
 import React from "react";
 import "./DashboardHeader.css";
-import { Button } from "../button/Button";
 import ButtonDate from "../buttonDate/buttonDate";
 
 export const DashboardHeader: React.FC = () => (
@@ -13,7 +12,6 @@ export const DashboardHeader: React.FC = () => (
     </div>
 
     <div className="header-actions">
-      <button className="widget-button">+ Add widget</button>
       <ButtonDate />
     </div>
   </div>

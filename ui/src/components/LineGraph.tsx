@@ -42,7 +42,7 @@ export function LineGraph() {
     <Card style={{ backgroundColor: "#2e3137", maxWidth: "40vw" }}>
       <CardHeader>
         <CardTitle>Line Chart - Multiple</CardTitle>
-        <CardDescription>January - June 2024</CardDescription>
+        <CardDescription>Últimos 30 dias</CardDescription>
       </CardHeader>
       <CardContent>
         <ChartContainer config={chartConfig}>

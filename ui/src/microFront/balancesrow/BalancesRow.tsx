@@ -4,16 +4,16 @@ import "./BalancesRow.css";
 export const BalancesRow: React.FC = () => (
   <div className="balances-row">
     <div className="balance-card">
-      <span className="card-label">Total balance</span>
-      <span className="card-value">$80,300</span>
+      <span className="card-label">Saldo total</span>
+      <span className="card-value">R$80,300</span>
     </div>
     <div className="balance-card">
-      <span className="card-label">Main balance</span>
-      <span className="card-value">$73,300</span>
+      <span className="card-label">Fatura atual Cartão NuBank</span>
+      <span className="card-value">R$3,300</span>
     </div>
     <div className="balance-card">
-      <span className="card-label">Credit balance</span>
-      <span className="card-value">$5,000</span>
+      <span className="card-label">Fatura atual Cartão PicPay</span>
+      <span className="card-value">R$5,000</span>
     </div>
   </div>
 );

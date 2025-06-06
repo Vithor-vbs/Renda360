@@ -123,12 +123,12 @@ const chartConfig = {
     label: "Visitors",
   },
   desktop: {
-    label: "Desktop",
-    color: "var(--chart-1)",
+    label: "Cartão PicPay",
+    color: "var(--chart-2)",
   },
   mobile: {
-    label: "Mobile",
-    color: "var(--chart-2)",
+    label: "Cartão NuBank",
+    color: "var(--chart-1-purple)",
   },
 } satisfies ChartConfig;
 
@@ -157,30 +157,30 @@ export function InteractiveAreaChart() {
         boxShadow: "0 4px 12px rgba(0, 0, 0, 0.3)",
       }}
     >
-      <CardHeader className="flex items-center gap-2 space-y-0 py-5 sm:flex-row">
+      <CardHeader className="flex items-center justify-between gap-2 space-y-0 py-5 sm:flex-row w-full">
         <div className="grid flex-1 gap-1 text-center sm:text-left">
           <CardTitle className="text-[#ffff]">Faturas por mês</CardTitle>
-          <CardDescription>
-            Mostra os valores das suas faturas nos últimos meses
+          <CardDescription style={{ color: "#cccccc" }}>
+            Mostra os valores das suas faturas nos últimos meses dos diferentes cartões.
           </CardDescription>
         </div>
         <Select value={timeRange} onValueChange={setTimeRange}>
           <SelectTrigger
-            className="w-[160px] rounded-lg sm:ml-auto"
+            className="w-[160px] rounded-lg"
             aria-label="Select a value"
-            style={{ color: "#fff" }}
+            style={{ color: "#fff", marginLeft: "auto" }}
           >
-            <SelectValue placeholder="Last 3 months" />
+            <SelectValue placeholder="Últimos 3 meses" />
           </SelectTrigger>
-          <SelectContent className="rounded-xl">
-            <SelectItem value="90d" className="rounded-lg">
-              Last 3 months
+          <SelectContent className="rounded-xl" style={{ color: "#fff" }}>
+            <SelectItem value="90d" className="rounded-lg hover:bg-gray-700">
+              Últimos 3 meses
             </SelectItem>
-            <SelectItem value="30d" className="rounded-lg">
-              Last 30 days
+            <SelectItem value="30d" className="rounded-lg hover:bg-gray-700">
+              Últimos 30 dias
             </SelectItem>
-            <SelectItem value="7d" className="rounded-lg">
-              Last 7 days
+            <SelectItem value="7d" className="rounded-lg hover:bg-gray-700">
+              Últimos 7 dias
             </SelectItem>
           </SelectContent>
         </Select>
