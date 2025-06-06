@@ -4,6 +4,7 @@
   flex: 1;
   min-height: 100vh;
   overflow: hidden;
+  margin-left: 14rem;
 }
 .home-content {
   flex: 1;

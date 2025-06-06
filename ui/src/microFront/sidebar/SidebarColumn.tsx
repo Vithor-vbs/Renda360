@@ -42,9 +42,9 @@ export const SidebarColumn: React.FC<Props> = ({ selected }) => {
         </li>
         <li>
           <Link
-            to="/extractor  "
+            to="/extractor"
             className={`sidebar-item ${
-              selected === "/doc-extractor" ? "active" : ""
+              selected === "/extractor" ? "active" : ""
             }`}
           >
             <span className="sidebar-icon">
