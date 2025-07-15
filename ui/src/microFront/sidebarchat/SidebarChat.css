@@ -5,7 +5,7 @@
   padding: 1rem;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   transition: background-color 0.3s ease;
-  max-height: 67rem;
+  height: 42rem;
 }
 
 .sidebarchat-header {
@@ -65,7 +65,8 @@
 
 .sidebarchat-label {
   color: #ffff;
-  margin-bottom: 10rem;
+  padding: 2.5rem 0;
+  border-bottom: #8a8a8a solid 1px;
 }
 
 .sidebarchat-footer {

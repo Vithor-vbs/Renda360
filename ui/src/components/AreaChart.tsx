@@ -123,11 +123,11 @@ const chartConfig = {
     label: "Visitors",
   },
   desktop: {
-    label: "Cartão PicPay",
+    label: "Entradas",
     color: "var(--chart-2)",
   },
   mobile: {
-    label: "Cartão NuBank",
+    label: "Saídas",
     color: "var(--chart-1-purple)",
   },
 } satisfies ChartConfig;
@@ -161,7 +161,7 @@ export function InteractiveAreaChart() {
         <div className="grid flex-1 gap-1 text-center sm:text-left">
           <CardTitle className="text-[#ffff]">Faturas por mês</CardTitle>
           <CardDescription style={{ color: "#cccccc" }}>
-            Mostra os valores das suas faturas nos últimos meses dos diferentes cartões.
+            Mostra os valores das entradas e saídas nos últimos meses.
           </CardDescription>
         </div>
         <Select value={timeRange} onValueChange={setTimeRange}>
