@@ -1,5 +1,7 @@
+from datetime import timedelta
 from .routes.auth import auth_bp
 from .routes.user import user_bp
+from .routes.julius import julius_bp
 from .routes.statements import statements_bp
 from .models import db
 
@@ -39,13 +41,14 @@ migrate = Migrate(app, db)
 
 # JWT configuration
 app.config["JWT_SECRET_KEY"] = os.getenv('JWT_SECRET_KEY')
-app.config["JWT_ACCESS_TOKEN_EXPIRES"] = 3600
+app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(days=7)
 jwt = JWTManager(app)
 
 # Register blueprints
 app.register_blueprint(auth_bp)
 app.register_blueprint(user_bp, url_prefix='/users')
 app.register_blueprint(statements_bp)
+app.register_blueprint(julius_bp, url_prefix='/julius')
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -1,7 +1,9 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, app, jsonify, request
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask_app.pdf_extractor.pdf_extractor import NubankExtractor
 from ..models import Card, PDFExtractable, Transaction, User, db
+from ..ai_processing import generate_data_embeddings
+from flask_app.julius_ai import update_embeddings_for_user
 
 
 statements_bp = Blueprint('statements', __name__)
@@ -82,6 +84,10 @@ def upload_pdf():
                 db.session.add(transaction)
 
             db.session.commit()
+            try:
+                update_embeddings_for_user(user.id, pdf.id)
+            except Exception as e:
+                app.logger.error(f"Failed to update embeddings: {str(e)}")
         return jsonify({"msg": f"{len(transactions)} transactions and PDF info saved"}), 201
     except Exception as e:
         db.session.rollback()
