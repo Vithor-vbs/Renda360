@@ -75,6 +75,8 @@ docker-compose up -d db
 ```bashcd backend
 source venv/bin/activate
 flask run
+
+Windows python -m venv .venv
 ```
 
 3. **Start Frontend**
