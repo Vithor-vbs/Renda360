@@ -1,3 +1,4 @@
+import os.path
 from datetime import timedelta
 from .routes.auth import auth_bp
 from .routes.user import user_bp
@@ -5,7 +6,7 @@ from .routes.julius import julius_bp
 from .routes.statements import statements_bp
 from .models import db
 
-from flask import Flask
+from flask import Flask, request, make_response
 from flask_jwt_extended import (
     JWTManager
 )
@@ -17,13 +18,19 @@ from flask_migrate import Migrate
 load_dotenv()
 
 app = Flask(__name__)
+
+# CORS configuration - more explicit setup
 CORS(app,
-     supports_credentials=True,
-     origins=[os.getenv('CLIENT_ORIGIN')],
-     expose_headers=["Authorization"],
-     allow_headers=["Authorization", "Content-Type"],
-     methods=["GET", "POST", "PUT", "DELETE"]
-     )
+     resources={
+         r"/*": {
+             "origins": [os.getenv('CLIENT_ORIGIN', 'http://localhost:5173')],
+             "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+             "allow_headers": ["Authorization", "Content-Type", "Accept"],
+             "expose_headers": ["Authorization"],
+             "supports_credentials": True,
+             "max_age": 600
+         }
+     })
 
 # Database configuration
 app.config['SQLALCHEMY_ECHO'] = True
@@ -36,13 +43,32 @@ app.config['SQLALCHEMY_DATABASE_URI'] = (
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)
-migrate = Migrate(app, db)
+# Use the migrations directory inside flask_app
+migrations_dir = os.path.join(os.path.dirname(__file__), 'migrations')
+migrate = Migrate(app, db, directory=migrations_dir)
 
 
 # JWT configuration
 app.config["JWT_SECRET_KEY"] = os.getenv('JWT_SECRET_KEY')
 app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(days=7)
 jwt = JWTManager(app)
+
+# Handle preflight OPTIONS requests
+
+
+@app.before_request
+def handle_preflight():
+    if request.method == "OPTIONS":
+        response = make_response()
+        response.headers.add("Access-Control-Allow-Origin",
+                             os.getenv('CLIENT_ORIGIN', 'http://localhost:5173'))
+        response.headers.add('Access-Control-Allow-Headers',
+                             "Authorization,Content-Type,Accept")
+        response.headers.add('Access-Control-Allow-Methods',
+                             "GET,PUT,POST,DELETE,OPTIONS")
+        response.headers.add('Access-Control-Allow-Credentials', 'true')
+        return response
+
 
 # Register blueprints
 app.register_blueprint(auth_bp)

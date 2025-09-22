@@ -18,65 +18,101 @@
 - Docker Desktop
 - PostgreSQL client (optional)
 
-### Installation
+### Quick Start
 
-1. **Frontend Dependencies**
-
-```bash
-cd ui/
-npm install
-```
-
-2. **Backend Dependencies**
+1. **Clone Repository**
 
 ```bash
-source pyenv/bin/activate  # Windows: venv\Scripts\activate
-pip install -r requirements.txt
+git clone https://github.com/Vithor-vbs/Renda360.git
+cd Renda360
 ```
 
-### Configuration
-
-1. **Environment Variables**
-   Create `.env` in project root:
+2. **Environment Setup**
+   Create `.env` file in project root:
 
 ```env
-# Database
+# PostgreSQL
 POSTGRES_DB=renda360
 POSTGRES_USER=renda_user
 POSTGRES_PASSWORD=strongpassword123
 
 # Flask
-JWT_SECRET_KEY=your-super-secret-key
-CLIENT_ORIGIN=http://localhost:3000
+JWT_SECRET_KEY=your-super-secret-key-change-this
+CLIENT_ORIGIN=http://localhost:5173
+FLASK_APP=flask_app.app
 ```
 
-2. **Database Setup**
+3. **Backend Dependencies**
 
 ```bash
-docker-compose up --build
+# Create virtual environment (if not exists)
+python3 -m venv pyenv
+source pyenv/bin/activate  # Windows: pyenv\Scripts\activate
+
+# Install dependencies
+pip install -r requirements.txt
 ```
 
-3. **Run Migrations**
+4. **Frontend Dependencies**
 
 ```bash
+cd ui/
+npm install
+cd ..
+```
+
+5. **Database Setup**
+
+```bash
+# Start PostgreSQL container
+docker-compose up -d
+
+# Wait for database to be ready, then run migrations
 flask db upgrade
 ```
+
+**Note:** Migrations are located in `flask_app/migrations/` and are automatically configured.
+
+## Database Schema
+
+The application uses the following main tables:
+
+- **user** - User accounts and authentication
+- **card** - Credit/debit cards linked to users
+- **pdf_extractable** - PDF statements uploaded by users
+- **transaction** - Individual transactions from statements
+
+### Database Migrations
+
+This project uses Flask-Migrate for database versioning:
+
+- **Migration files**: `flask_app/migrations/versions/`
+- **Configuration**: Automatically configured in `flask_app/app.py`
+- **Commands**: Standard Flask-Migrate commands work as expected
+
+For new developers:
+
+1. After cloning, run `flask db upgrade` to create tables
+2. When you modify models, run `flask db migrate -m "description"`
+3. Apply changes with `flask db upgrade`
 
 ### Running the Application
 
 1. **Start Database**
 
 ```bash
-docker-compose up -d db
+docker-compose up -d
 ```
 
 2. **Start Backend**
 
-```bashcd backend
-source venv/bin/activate
-flask run
+```bash
+# Activate virtual environment
+source pyenv/bin/activate  # Windows: pyenv\Scripts\activate
 
-Windows python -m venv .venv
+# Run Flask server
+flask run
+# Server will run at http://localhost:5000
 ```
 
 3. **Start Frontend**
@@ -84,7 +120,10 @@ Windows python -m venv .venv
 ```bash
 cd ui/
 npm run dev
+# Frontend will run at http://localhost:5173
 ```
+
+Access the application at `http://localhost:5173`
 
 ## Auth API Endpoints
 
@@ -113,11 +152,35 @@ docker exec -it <container_id> bash
 psql -U renda_user -d renda360
 ```
 
-**Flask Migration Problems**
+**Flask Migration Issues**
+
+If you encounter migration problems:
 
 ```bash
+# Check current migration state
+flask db current
+
+# Force database to latest migration state (only if tables exist)
 flask db stamp head
-flask db migrate
+
+# Create new migration (after model changes)
+flask db migrate -m "description of changes"
+
+# Apply migrations
+flask db upgrade
+```
+
+**Database Reset** (if needed):
+
+```bash
+# Stop containers
+docker-compose down
+
+# Remove database volume (WARNING: destroys all data)
+docker volume rm renda360_postgres_data
+
+# Restart and migrate
+docker-compose up -d
 flask db upgrade
 ```
 

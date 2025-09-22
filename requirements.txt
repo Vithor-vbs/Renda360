@@ -7,3 +7,6 @@ flask-migrate
 psycopg2-binary
 werkzeug
 langchain
+langchain-openai
+langchain-community
+pdfplumber
