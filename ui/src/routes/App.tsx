@@ -9,6 +9,7 @@ import RegisterPage from "../microFront/Auth/Register/RegisterPage";
 import ProtectedRoute from "./ProtectedRoute";
 import { AuthProvider } from "@/context/AuthContext";
 import { NotificationProvider } from "@/context/NotificationService";
+import SettingsPage from "@/microFront/settings/settingsPage";
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
                 <Route path="/transactions" element={<TransactionsPage />} />
                 <Route path="/notification" element={<NotificationPage />} />
                 <Route path="/extractor" element={<ExtractFilePage />} />
+                <Route path="/settingsPage" element={<SettingsPage />} />
               </Route>
             </Route>
             {/* Public routes */}

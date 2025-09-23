@@ -1,10 +1,10 @@
 import React from "react";
 import "./Banner.css";
 import logo from "../../assets/logo_with_name.png";
-import accountIcon from "../../assets/account.png";
 import { IconButton } from "../iconButton/IconButton";
 import settingsIcon from "../../assets/settings.svg";
 import notificationIcon from "../../assets/notification.svg";
+import { useNavigate } from "react-router-dom";
 
 interface BannerProps {
   onNotificationHover: (hovering: boolean) => void;
@@ -12,6 +12,7 @@ interface BannerProps {
 }
 
 const Banner: React.FC<BannerProps> = ({ onNotificationHover, clientName }) => {
+  const navigate = useNavigate();
   return (
     <div className="banner-container">
       <a href="/" className="banner-left">
@@ -22,10 +23,6 @@ const Banner: React.FC<BannerProps> = ({ onNotificationHover, clientName }) => {
         <div>
           <span style={{ color: "#fff" }}>Olá,</span>{" "}
           <span className="client-name ">{clientName}</span> 👋
-        </div>
-        <div className="account-info">
-          {/* Exibe o nome do cliente */}
-          <img className="settings-button" src={accountIcon} alt="Renda360" />
         </div>
         <div
           onMouseEnter={() => onNotificationHover(true)}
@@ -42,7 +39,7 @@ const Banner: React.FC<BannerProps> = ({ onNotificationHover, clientName }) => {
           className="settings-button"
           src={settingsIcon}
           alt="Configurações"
-          onClick={() => {}}
+          onClick={() => navigate("/settingsPage")}
         />
       </div>
     </div>
