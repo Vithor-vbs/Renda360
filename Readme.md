@@ -4,6 +4,25 @@
 
 ![image](https://github.com/user-attachments/assets/86b9125f-74b1-4588-a88e-9d052dac1c36)
 
+1. User uploads Nubank PDF
+   ↓
+2. PDF Extractor processes file
+   ├─ Extracts transactions → PostgreSQL
+   └─ Creates embeddings → FAISS vectors
+   ↓
+3. User asks: "Quanto gastei em restaurantes?"
+   ↓
+4. Julius AI receives question
+   ├─ Normalizes: "quanto gastei em restaurantes"
+   ├─ Checks cache: Miss
+   ├─ Pattern matches: "quanto gastei" → total_spending_query  
+   ├─ Filters by category: "restaurantes"
+   └─ Executes: SELECT SUM(amount) WHERE description LIKE '%restaurant%'
+   ↓
+5. Returns: "Você gastou R$ 847.30 em restaurantes este mês"
+   ├─ Caches response for 30 minutes
+   └─ Updates cost statistics (pattern_matches++)
+
 - React frontend
 - Flask backend API
 - PostgreSQL database
@@ -35,11 +54,14 @@ cd Renda360
 POSTGRES_DB=renda360
 POSTGRES_USER=renda_user
 POSTGRES_PASSWORD=strongpassword123
+DATABASE_URI=postgresql://renda_user:strongpassword123@localhost:5432/renda360
 
 # Flask
 JWT_SECRET_KEY=your-super-secret-key-change-this
 CLIENT_ORIGIN=http://localhost:5173
 FLASK_APP=flask_app.app
+
+OPENAI_API_KEY= 💩
 ```
 
 3. **Backend Dependencies**

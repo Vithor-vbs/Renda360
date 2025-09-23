@@ -50,10 +50,26 @@ class PDFExtractable(db.Model):
 
 class Transaction(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    date = db.Column(db.String(20), nullable=False)
+    date = db.Column(db.String(20), nullable=False)  # ISO format: "2025-08-21"
+    # Cleaned description
     description = db.Column(db.String(256), nullable=False)
+    description_original = db.Column(
+        db.String(500), nullable=True)  # Original raw description
     amount = db.Column(db.Float, nullable=False)
     pdf_id = db.Column(db.Integer, db.ForeignKey(
         'pdf_extractable.id'), nullable=False)
+
+    # Enhanced fields for intelligent categorization
+    # e.g., "food_delivery", "groceries"
+    category = db.Column(db.String(50), nullable=True)
+    # e.g., "Uber Eats", "Carrefour"
+    merchant = db.Column(db.String(200), nullable=True)
+    is_installment = db.Column(db.Boolean, default=False, nullable=False)
+    installment_info = db.Column(db.String(20), nullable=True)  # e.g., "2/6"
+
+    # Timestamps for better tracking
+    created_at = db.Column(db.DateTime, server_default=db.func.now())
+    updated_at = db.Column(
+        db.DateTime, server_default=db.func.now(), onupdate=db.func.now())
 
 # outras tabelinhas pussy ...

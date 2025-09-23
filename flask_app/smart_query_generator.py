@@ -116,7 +116,7 @@ class BrazilianFinancialQueryGenerator:
             "transacoes_periodo": {
                 "keywords": ["transações", "compras", "gastos do", "movimentação", "atividade"],
                 "sql_template": """
-                    SELECT t.date, t.description, t.amount
+                    SELECT t.date, t.description, t.amount, t.merchant, t.category
                     FROM transaction t
                     JOIN pdf_extractable p ON t.pdf_id = p.id
                     JOIN card c ON p.card_id = c.id
@@ -127,6 +127,96 @@ class BrazilianFinancialQueryGenerator:
                 """,
                 "query_type": "list",
                 "default_params": {"limit": 20}
+            },
+
+            # Category-specific queries
+            "gastos_delivery": {
+                "keywords": ["delivery", "entrega", "ifood", "uber eats", "rappi", "99 food"],
+                "sql_template": """
+                    SELECT t.date, t.description, t.amount, t.merchant
+                    FROM transaction t
+                    JOIN pdf_extractable p ON t.pdf_id = p.id
+                    JOIN card c ON p.card_id = c.id
+                    WHERE c.user_id = :user_id
+                    AND t.category = 'food_delivery'
+                    AND t.amount > 0.01
+                    ORDER BY t.amount DESC
+                    LIMIT {limit}
+                """,
+                "query_type": "list",
+                "default_params": {"limit": 15}
+            },
+
+            "gastos_supermercado": {
+                "keywords": ["supermercado", "mercado", "groceries", "compras do mês", "feira"],
+                "sql_template": """
+                    SELECT t.date, t.description, t.amount, t.merchant
+                    FROM transaction t
+                    JOIN pdf_extractable p ON t.pdf_id = p.id
+                    JOIN card c ON p.card_id = c.id
+                    WHERE c.user_id = :user_id
+                    AND t.category = 'groceries'
+                    AND t.amount > 0.01
+                    ORDER BY t.amount DESC
+                    LIMIT {limit}
+                """,
+                "query_type": "list",
+                "default_params": {"limit": 15}
+            },
+
+            "gastos_transporte": {
+                "keywords": ["transporte", "uber", "taxi", "99", "combustível", "gasolina"],
+                "sql_template": """
+                    SELECT t.date, t.description, t.amount, t.merchant, t.category
+                    FROM transaction t
+                    JOIN pdf_extractable p ON t.pdf_id = p.id
+                    JOIN card c ON p.card_id = c.id
+                    WHERE c.user_id = :user_id
+                    AND (t.category = 'transport' OR t.category = 'fuel')
+                    AND t.amount > 0.01
+                    ORDER BY t.amount DESC
+                    LIMIT {limit}
+                """,
+                "query_type": "list",
+                "default_params": {"limit": 15}
+            },
+
+            "gastos_assinaturas": {
+                "keywords": ["assinaturas", "netflix", "spotify", "mensalidade", "planos"],
+                "sql_template": """
+                    SELECT t.date, t.description, t.amount, t.merchant
+                    FROM transaction t
+                    JOIN pdf_extractable p ON t.pdf_id = p.id
+                    JOIN card c ON p.card_id = c.id
+                    WHERE c.user_id = :user_id
+                    AND t.category = 'subscriptions'
+                    AND t.amount > 0.01
+                    ORDER BY t.amount DESC
+                    LIMIT {limit}
+                """,
+                "query_type": "list",
+                "default_params": {"limit": 15}
+            },
+
+            "total_por_categoria": {
+                "keywords": ["total por categoria", "gastos por tipo", "categorias de gasto"],
+                "sql_template": """
+                    SELECT 
+                        t.category,
+                        SUM(t.amount) as total_gasto,
+                        COUNT(*) as num_transacoes,
+                        AVG(t.amount) as gasto_medio
+                    FROM transaction t
+                    JOIN pdf_extractable p ON t.pdf_id = p.id
+                    JOIN card c ON p.card_id = c.id
+                    WHERE c.user_id = :user_id
+                    AND t.amount > 0.01
+                    AND t.category IS NOT NULL
+                    GROUP BY t.category
+                    ORDER BY total_gasto DESC
+                """,
+                "query_type": "aggregation",
+                "default_params": {}
             }
         }
 

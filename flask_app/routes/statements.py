@@ -34,15 +34,15 @@ def upload_pdf():
         if not card:
             return jsonify({"msg": "Card not found"}), 404
 
-        with NubankExtractor(temp_path) as extractor:
-            # Extract all info
+        with NubankExtractor(temp_path, year=2025) as extractor:
+            # Extract all info using new normalized methods
             statement_summary = extractor.extract_nubank_summary()
-            categories = extractor.extract_categories()
+            categories = extractor.get_spending_by_category()  # Enhanced categories
             period = extractor.extract_statement_period()
             invoice_summary = extractor.extract_invoice_summary()
             limits = extractor.extract_available_limits()
             next_info = extractor.extract_next_invoices()
-            transactions = extractor.extract_nubank_transactions()
+            normalized_transactions = extractor.extract_normalized_transactions()  # New method
 
             # Update card limits
             if limits:
@@ -72,12 +72,18 @@ def upload_pdf():
             db.session.add(pdf)
             db.session.flush()
 
-            # Add transactions
-            for t in transactions:
+            # Add normalized transactions with enhanced data
+            for t in normalized_transactions:
                 transaction = Transaction(
-                    date=t['date'],
-                    description=t['description'],
-                    amount=t['amount'],
+                    # Use normalized date format (YYYY-MM-DD)
+                    date=t.date_formatted,
+                    description=t.description,  # Use cleaned description
+                    description_original=t.description_original,  # Preserve original
+                    amount=t.amount,
+                    category=t.category.value,  # Store category enum value
+                    merchant=t.merchant,  # Store extracted merchant name
+                    is_installment=t.is_installment,  # Installment detection
+                    installment_info=t.installment_info,  # Installment details
                     pdf_id=pdf.id
                 )
                 db.session.add(transaction)
@@ -88,7 +94,7 @@ def upload_pdf():
             except Exception as e:
                 current_app.logger.error(
                     f"Failed to update embeddings: {str(e)}")
-        return jsonify({"msg": f"{len(transactions)} transactions and PDF info saved"}), 201
+        return jsonify({"msg": f"{len(normalized_transactions)} transactions and PDF info saved"}), 201
     except Exception as e:
         db.session.rollback()
         return jsonify({"msg": f"Error processing PDF: {e}"}), 500
