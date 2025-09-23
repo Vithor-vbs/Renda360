@@ -10,3 +10,4 @@ langchain
 langchain-openai
 langchain-community
 pdfplumber
+faiss-cpu

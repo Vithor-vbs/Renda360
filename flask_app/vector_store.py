@@ -2,6 +2,9 @@ from langchain_community.vectorstores import FAISS
 from langchain_openai import OpenAIEmbeddings
 import os
 import logging
+from flask import has_app_context
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
 from langchain.docstore.document import Document
 from .models import db, PDFExtractable, Transaction, Card
 
@@ -15,6 +18,22 @@ class FinancialVectorStore:
         os.makedirs(os.path.dirname(self.save_path), exist_ok=True)
         self.embeddings = OpenAIEmbeddings()
         self.vectorstore = self._load_or_create_store()
+        self._session = None
+
+    def _get_session(self):
+        """Get a database session that works both inside and outside Flask context"""
+        if has_app_context():
+            return db.session
+        else:
+            # Create a standalone session if outside Flask context
+            if not self._session:
+                from dotenv import load_dotenv
+                load_dotenv()
+                database_uri = os.getenv('DATABASE_URI')
+                engine = create_engine(database_uri)
+                Session = sessionmaker(bind=engine)
+                self._session = Session()
+            return self._session
 
     def _load_or_create_store(self):
         try:
@@ -38,8 +57,10 @@ class FinancialVectorStore:
     def update_user_data(self, pdf_id=None):
         try:
             """Update vector store with latest financial data"""
+            session = self._get_session()
+
             # Fetch all PDFs for user
-            pdfs = PDFExtractable.query.join(Card).filter(
+            pdfs = session.query(PDFExtractable).join(Card).filter(
                 Card.user_id == self.user_id
             ).all()
 
@@ -70,7 +91,8 @@ class FinancialVectorStore:
                 ))
 
                 # Add transactions
-                transactions = Transaction.query.filter_by(pdf_id=pdf.id).all()
+                transactions = session.query(
+                    Transaction).filter_by(pdf_id=pdf.id).all()
                 for t in transactions:
                     transaction_doc = f"""
                     Transaction Date: {t.date}
@@ -82,8 +104,8 @@ class FinancialVectorStore:
                         metadata={
                             "type": "transaction",
                             "transaction_id": t.id,
-                            "date": t.date,
-                            "amount": t.amount,
+                            "date": str(t.date),
+                            "amount": float(t.amount),
                             "pdf_id": pdf.id
                         }
                     ))
