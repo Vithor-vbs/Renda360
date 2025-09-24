@@ -324,7 +324,7 @@ class NubankExtractor(PDFExtractor):
                 return True, f"{current}/{total}"
 
         # Look for words indicating installments
-        installment_words = ['parc', 'parcela', 'vez', 'de ']
+        installment_words = ['parc', 'parcela']
         if any(word in description.lower() for word in installment_words):
             return True, None
 

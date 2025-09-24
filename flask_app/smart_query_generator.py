@@ -418,18 +418,77 @@ class BrazilianFinancialQueryGenerator:
         
         Sempre usar: WHERE c.user_id = :user_id
         
-        JSON:
+        IMPORTANTE: Responda APENAS com JSON válido, sem explicações ou texto adicional.
+        
         {{"sql_query": "SELECT...", "query_type": "list", "expected_format": "table"}}
         """
 
         try:
             llm = self._get_llm()
             response = llm.invoke(prompt)
-            result = json.loads(response.content)
+
+            # Handle different response types from LangChain
+            if hasattr(response, 'content'):
+                content = response.content
+            else:
+                content = str(response)
+
+            # Clean up the content to extract JSON
+            content = content.strip()
+
+            # Handle multiple JSON extraction patterns
+            if '```json' in content:
+                # Extract JSON from markdown code blocks
+                json_start = content.find('```json') + 7
+                json_end = content.find('```', json_start)
+                if json_end != -1:
+                    content = content[json_start:json_end].strip()
+                else:
+                    content = content[json_start:].strip()
+            elif 'JSON:' in content:
+                # Extract JSON after "JSON:" marker
+                json_start = content.find('JSON:') + 5
+                content = content[json_start:].strip()
+                if content.startswith('```json'):
+                    content = content[7:]
+                if content.endswith('```'):
+                    content = content[:-3]
+                content = content.strip()
+            elif content.startswith('{') and content.endswith('}'):
+                # Already clean JSON
+                pass
+            else:
+                # Try to find JSON object in mixed content
+                json_start = content.find('{')
+                json_end = content.rfind('}') + 1
+                if json_start != -1 and json_end > json_start:
+                    content = content[json_start:json_end]
+
+            # If no content, return error
+            if not content:
+                logger.error("Empty response from LLM")
+                return {
+                    "sql_query": None,
+                    "query_type": "error",
+                    "error": "Empty response from LLM",
+                    "api_cost": 1
+                }
+
+            result = json.loads(content)
             result["api_cost"] = 1  # Mark as API call
             result["post_processing"] = {"filter_dates": False}
             result["params"] = {"user_id": self.user_id}
             return result
+        except json.JSONDecodeError as e:
+            logger.error(
+                f"JSON parsing failed. Content: {content if 'content' in locals() else 'No content'}")
+            logger.error(f"JSON error: {e}")
+            return {
+                "sql_query": None,
+                "query_type": "error",
+                "error": f"JSON parsing failed: {str(e)}",
+                "api_cost": 1
+            }
         except Exception as e:
             logger.error(f"LLM query generation failed: {e}")
             return {

@@ -72,4 +72,49 @@ class Transaction(db.Model):
     updated_at = db.Column(
         db.DateTime, server_default=db.func.now(), onupdate=db.func.now())
 
+
+class ConversationSession(db.Model):
+    """Chat session for Julius AI conversations"""
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    session_id = db.Column(db.String(50), nullable=False,
+                           unique=True)  # UUID for frontend
+    is_active = db.Column(db.Boolean, default=True, nullable=False)
+    created_at = db.Column(db.DateTime, server_default=db.func.now())
+    updated_at = db.Column(
+        db.DateTime, server_default=db.func.now(), onupdate=db.func.now())
+
+    # Relationships
+    messages = db.relationship(
+        'ConversationMessage', backref='session', lazy=True, cascade='all, delete-orphan')
+
+    # Index for faster queries
+    __table_args__ = (
+        db.Index('idx_user_active_session', 'user_id', 'is_active'),)
+
+
+class ConversationMessage(db.Model):
+    """Individual messages in Julius AI conversations"""
+    id = db.Column(db.Integer, primary_key=True)
+    session_id = db.Column(db.String(50), db.ForeignKey(
+        'conversation_session.session_id'), nullable=False)
+    # 'user' or 'assistant'
+    message_type = db.Column(db.String(20), nullable=False)
+    content = db.Column(db.Text, nullable=False)
+
+    # Metadata for Julius AI context
+    # 'pattern_match', 'vector_search', 'llm_query'
+    query_type = db.Column(db.String(50), nullable=True)
+    # 'aggressive', 'balanced', 'quality'
+    optimization_level = db.Column(db.String(20), nullable=True)
+    response_time_ms = db.Column(
+        db.Integer, nullable=True)  # Performance tracking
+    cost_estimate = db.Column(db.Float, nullable=True)  # Cost tracking
+
+    created_at = db.Column(db.DateTime, server_default=db.func.now())
+
+    # Index for faster message retrieval
+    __table_args__ = (db.Index('idx_session_created',
+                      'session_id', 'created_at'),)
+
 # outras tabelinhas pussy ...

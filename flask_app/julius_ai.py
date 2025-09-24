@@ -4,7 +4,7 @@ import logging
 import time
 import hashlib
 from datetime import datetime
-from typing import Dict, Any, Optional
+from typing import Dict, Any, Optional, List
 
 from langchain_openai import ChatOpenAI
 from langchain import hub
@@ -82,6 +82,11 @@ class InMemoryCache:
         self.access_times[key] = current_time
 
 
+class SmartQueryInput(BaseModel):
+    question: str = Field(
+        description="The financial question in Portuguese. Examples: 'Quais meus maiores gastos?', 'Quanto gastei este mês?', 'Últimas transações'")
+
+
 class FinancialQueryInput(BaseModel):
     query_type: str = Field(
         description="The type of query. Supported: 'largest_expenses', 'transactions_by_amount', 'spending_by_category', 'total_spending'.")
@@ -96,9 +101,10 @@ class FinancialQueryInput(BaseModel):
 
 
 class JuliusAI:
-    def __init__(self, user_id, optimization_level: str = "aggressive"):
+    def __init__(self, user_id, optimization_level: str = "aggressive", session_id: Optional[str] = None):
         self.user_id = user_id
         self.optimization_level = optimization_level
+        self.session_id = session_id
 
         # Initialize cost optimization components
         self.response_cache = InMemoryCache(max_size=500, default_ttl=1800)
@@ -218,6 +224,41 @@ class JuliusAI:
 
         return normalized
 
+    def _is_conversation_history_question(self, question: str) -> bool:
+        """Check if question is about conversation history"""
+        conversation_keywords = [
+            'última pergunta', 'ultima pergunta', 'pergunta anterior',
+            'perguntei antes', 'conversa anterior', 'histórico',
+            'o que perguntei', 'minha pergunta anterior'
+        ]
+        question_lower = question.lower()
+        return any(keyword in question_lower for keyword in conversation_keywords)
+
+    def _handle_conversation_history_question(self, question: str) -> str:
+        """Handle questions about conversation history using memory system"""
+        try:
+            history = self.get_conversation_history(limit=10)
+
+            if len(history) < 2:  # No previous conversation
+                return "Esta é nossa primeira conversa. Você ainda não fez perguntas anteriores."
+
+            # Find the last user question (excluding current one)
+            user_messages = [
+                msg for msg in history if msg['message_type'] == 'user']
+
+            if len(user_messages) < 2:
+                return "Você ainda não fez perguntas anteriores nesta conversa."
+
+            # Second most recent (first is current)
+            last_question = user_messages[1]['content']
+            last_time = user_messages[1]['created_at']
+
+            return f"Sua última pergunta foi: '{last_question}' (feita em {last_time})"
+
+        except Exception as e:
+            logger.error(f"Error handling conversation history question: {e}")
+            return "Desculpe, não consegui acessar o histórico da conversa no momento."
+
     def _get_cache_key(self, question: str) -> str:
         """Generate cache key for question"""
         normalized = self._normalize_question(question)
@@ -235,10 +276,11 @@ class JuliusAI:
         try:
             tools = [
                 # Prioritize zero-cost pattern matching
-                Tool(
+                StructuredTool.from_function(
+                    func=self._enhanced_smart_query_structured,
                     name="SmartPortugueseQuery",
-                    func=self._enhanced_smart_query,
-                    description="🥇 PREFERRED TOOL for ALL Portuguese financial questions. Zero API cost for common queries. Handles 'quais meus maiores gastos', 'quanto gastei', 'últimas transações', 'gastos acima de R$ X', etc. Always try this FIRST before other tools."
+                    description="🥇 PREFERRED TOOL for ALL Portuguese financial questions. Zero API cost for common queries. Input: {'question': 'your question in portuguese'}. Handles 'quais meus maiores gastos', 'quanto gastei', 'últimas transações', 'gastos acima de R$ X', etc. Always try this FIRST before other tools.",
+                    args_schema=SmartQueryInput
                 ),
 
                 # Moderate cost document search
@@ -275,6 +317,11 @@ class JuliusAI:
             logger.exception(f"Agent creation failed: {str(e)}")
             return None
 
+    def _enhanced_smart_query_structured(self, question: str) -> str:
+        """Enhanced smart query with structured input using Pydantic schema"""
+        logger.info(f"SmartPortugueseQuery called with question: {question}")
+        return self._enhanced_smart_query(question)
+
     def _enhanced_smart_query(self, question) -> str:
         """Enhanced smart query with cost tracking and optimization"""
         try:
@@ -287,6 +334,10 @@ class JuliusAI:
 
             if not actual_question:
                 return "Erro: pergunta não especificada corretamente."
+
+            # Handle conversation history questions directly
+            if self._is_conversation_history_question(actual_question):
+                return self._handle_conversation_history_question(actual_question)
 
             result = self.smart_query_generator.execute_smart_query(
                 actual_question)
@@ -570,6 +621,196 @@ class JuliusAI:
             # For now, just update the configuration
         else:
             logger.warning(f"Invalid optimization level: {level}")
+
+    # === Conversation Memory System ===
+
+    def get_or_create_conversation_session(self) -> str:
+        """Get or create active conversation session for user"""
+        from .models import db, ConversationSession
+        import uuid
+
+        if self.session_id:
+            # Check if provided session exists and is active
+            session = ConversationSession.query.filter_by(
+                session_id=self.session_id,
+                user_id=self.user_id,
+                is_active=True
+            ).first()
+            if session:
+                return self.session_id
+
+        # Create new session or get existing active one
+        active_session = ConversationSession.query.filter_by(
+            user_id=self.user_id,
+            is_active=True
+        ).first()
+
+        if active_session:
+            self.session_id = active_session.session_id
+            return self.session_id
+
+        # Create new session
+        new_session_id = str(uuid.uuid4())
+        new_session = ConversationSession(
+            user_id=self.user_id,
+            session_id=new_session_id,
+            is_active=True
+        )
+        db.session.add(new_session)
+        db.session.commit()
+
+        self.session_id = new_session_id
+        return self.session_id
+
+    def get_conversation_history(self, limit: int = 10) -> List[Dict[str, Any]]:
+        """Get recent conversation history for context"""
+        from .models import ConversationMessage
+
+        if not self.session_id:
+            return []
+
+        messages = ConversationMessage.query.filter_by(
+            session_id=self.session_id
+        ).order_by(ConversationMessage.created_at.desc()).limit(limit * 2).all()
+
+        # Return in chronological order (oldest first)
+        history = []
+        for message in reversed(messages):
+            history.append({
+                'type': message.message_type,
+                'content': message.content,
+                'timestamp': message.created_at.isoformat(),
+                'query_type': message.query_type
+            })
+
+        return history
+
+    def save_conversation_message(self, message_type: str, content: str,
+                                  query_type: str = None, response_time_ms: int = None,
+                                  cost_estimate: float = None):
+        """Save message to conversation history"""
+        from .models import db, ConversationMessage
+
+        session_id = self.get_or_create_conversation_session()
+
+        message = ConversationMessage(
+            session_id=session_id,
+            message_type=message_type,  # 'user' or 'assistant'
+            content=content,
+            query_type=query_type,
+            optimization_level=self.optimization_level,
+            response_time_ms=response_time_ms,
+            cost_estimate=cost_estimate
+        )
+
+        db.session.add(message)
+        db.session.commit()
+
+    def clear_conversation(self) -> bool:
+        """Clear current conversation and start fresh"""
+        from .models import db, ConversationSession
+
+        if self.session_id:
+            session = ConversationSession.query.filter_by(
+                session_id=self.session_id,
+                user_id=self.user_id
+            ).first()
+
+            if session:
+                session.is_active = False
+                db.session.commit()
+                self.session_id = None
+                return True
+
+        return False
+
+    def ask_with_context(self, question: str) -> Dict[str, Any]:
+        """Enhanced ask method with conversation context and memory"""
+        import time
+        start_time = time.time()
+
+        # Ensure we have an active session
+        session_id = self.get_or_create_conversation_session()
+
+        # Save user message
+        self.save_conversation_message('user', question)
+
+        # Get conversation history for context
+        history = self.get_conversation_history(limit=5)  # Last 5 exchanges
+
+        # Build context-aware question if we have history
+        contextual_question = question
+        if len(history) > 2:  # If we have previous conversation
+            context_summary = self._build_context_summary(history)
+            contextual_question = f"Contexto da conversa: {context_summary}\n\nPergunta atual: {question}"
+
+        # Process the question
+        try:
+            response = self.ask(contextual_question)
+            query_type = self._get_last_query_type()  # We'll need to track this
+
+            # Calculate metrics
+            response_time_ms = int((time.time() - start_time) * 1000)
+            cost_estimate = self._estimate_last_query_cost()
+
+            # Save assistant response
+            self.save_conversation_message(
+                'assistant',
+                response,
+                query_type,
+                response_time_ms,
+                cost_estimate
+            )
+
+            return {
+                'response': response,
+                'session_id': session_id,
+                'response_time_ms': response_time_ms,
+                'query_type': query_type,
+                'optimization_level': self.optimization_level
+            }
+
+        except Exception as e:
+            logger.exception(f"Error in ask_with_context: {e}")
+            error_response = f"Desculpe, ocorreu um erro ao processar sua pergunta: {str(e)}"
+
+            # Save error response
+            self.save_conversation_message(
+                'assistant', error_response, 'error')
+
+            return {
+                'response': error_response,
+                'session_id': session_id,
+                'error': True
+            }
+
+    def _build_context_summary(self, history: List[Dict]) -> str:
+        """Build a concise context summary from conversation history"""
+        recent_topics = []
+        for msg in history[-4:]:  # Last 2 exchanges
+            if msg['type'] == 'user':
+                # Extract key topics from user questions
+                content = msg['content'].lower()
+                if any(word in content for word in ['gasto', 'gastei', 'despesa']):
+                    recent_topics.append('gastos')
+                if any(word in content for word in ['delivery', 'entrega', 'ifood', 'uber']):
+                    recent_topics.append('delivery')
+                if any(word in content for word in ['categoria', 'tipo', 'classificação']):
+                    recent_topics.append('categorias')
+
+        if recent_topics:
+            return f"Tópicos recentes: {', '.join(set(recent_topics))}"
+        return "Continuação da conversa anterior"
+
+    def _get_last_query_type(self) -> str:
+        """Get the type of the last query executed (for tracking)"""
+        # This would need to be set during query execution
+        return getattr(self, '_last_query_type', 'unknown')
+
+    def _estimate_last_query_cost(self) -> float:
+        """Estimate cost of the last query"""
+        # This would need to be calculated during query execution
+        return getattr(self, '_last_query_cost', 0.0)
 
     # Backwards compatibility
     def get_performance_stats(self) -> Dict[str, Any]:
