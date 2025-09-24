@@ -28,6 +28,32 @@ body,
   flex-direction: column;
   margin: 0rem 1rem 0rem 2rem;
   overflow-y: auto;
+  transition: margin-left 0.3s ease;
+}
+
+.app-layout-content.sidebar-collapsed {
+  margin-left: -8rem; /* Expand to take up the space from collapsed sidebar */
+}
+
+/* Global responsive behavior when sidebar is collapsed */
+.app-layout-content.sidebar-collapsed .ui-card {
+  max-width: none; /* Allow cards to expand more */
+}
+
+.app-layout-content.sidebar-collapsed .chart-container {
+  min-width: 350px; /* Ensure charts have minimum comfortable width */
+}
+
+/* Make transaction grid and other components wider when sidebar collapsed */
+.app-layout-content.sidebar-collapsed .transaction-grid,
+.app-layout-content.sidebar-collapsed .extractor-container {
+  padding: 0 1rem;
+  max-width: none;
+}
+
+/* Adjust goals section when more space is available */
+.app-layout-content.sidebar-collapsed .goals-container {
+  min-width: 400px;
 }
 
 .app-layout-sideBar {

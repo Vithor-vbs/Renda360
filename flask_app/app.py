@@ -4,6 +4,7 @@ from .routes.auth import auth_bp
 from .routes.user import user_bp
 from .routes.julius import julius_bp
 from .routes.statements import statements_bp
+from .routes.dashboard import dashboard_bp
 from .models import db
 
 from flask import Flask, request, make_response
@@ -75,6 +76,7 @@ app.register_blueprint(auth_bp)
 app.register_blueprint(user_bp, url_prefix='/users')
 app.register_blueprint(statements_bp)
 app.register_blueprint(julius_bp, url_prefix='/julius')
+app.register_blueprint(dashboard_bp)
 
 if __name__ == '__main__':
     app.run(debug=True)

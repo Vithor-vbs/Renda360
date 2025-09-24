@@ -44,6 +44,62 @@ def upload_pdf():
             next_info = extractor.extract_next_invoices()
             normalized_transactions = extractor.extract_normalized_transactions()  # New method
 
+            # DUPLICATE DETECTION - Check for existing PDFs with same characteristics
+            import hashlib
+
+            # Calculate file hash
+            with open(temp_path, 'rb') as f:
+                file_content = f.read()
+                file_hash = hashlib.md5(file_content).hexdigest()
+
+            # Check for duplicates by multiple criteria
+            existing_pdf = None
+
+            # 1. Check by file hash (most reliable)
+            existing_pdf = PDFExtractable.query.filter_by(
+                card_id=card.id,
+                file_hash=file_hash
+            ).first()
+
+            if existing_pdf:
+                return jsonify({
+                    "msg": "Duplicate file detected (same file content already uploaded)",
+                    "duplicate_type": "file_hash",
+                    "existing_pdf_id": existing_pdf.id,
+                    "existing_filename": existing_pdf.file_name
+                }), 409
+
+            # 2. Check by filename (less reliable but quick check)
+            existing_pdf = PDFExtractable.query.filter_by(
+                card_id=card.id,
+                file_name=file.filename
+            ).first()
+
+            if existing_pdf:
+                return jsonify({
+                    "msg": f"File with same name '{file.filename}' already exists for this card",
+                    "duplicate_type": "filename",
+                    "existing_pdf_id": existing_pdf.id,
+                    "suggestion": "Consider renaming the file if it's different content"
+                }), 409
+
+            # 3. Check by statement period (overlapping periods)
+            if period and period.get('start_date') and period.get('end_date'):
+                existing_pdf = PDFExtractable.query.filter_by(
+                    card_id=card.id,
+                    statement_period_start=period.get('start_date'),
+                    statement_period_end=period.get('end_date')
+                ).first()
+
+                if existing_pdf:
+                    return jsonify({
+                        "msg": f"Statement for the same period already exists ({period.get('start_date')} to {period.get('end_date')})",
+                        "duplicate_type": "statement_period",
+                        "existing_pdf_id": existing_pdf.id,
+                        "existing_filename": existing_pdf.file_name,
+                        "suggestion": "This might be a duplicate statement for the same billing period"
+                    }), 409
+
             # Update card limits
             if limits:
                 card.used_limit = limits.get('used_limit')
@@ -54,6 +110,7 @@ def upload_pdf():
             pdf = PDFExtractable(
                 card_id=card.id,
                 file_name=file.filename,
+                file_hash=file_hash,  # Store the hash for future duplicate detection
                 statement_date=statement_summary.get('statement_date'),
                 statement_period_start=period.get('start_date'),
                 statement_period_end=period.get('end_date'),
@@ -200,3 +257,174 @@ def get_pdf_with_transactions(pdf_id):
             "amount": t.amount
         } for t in transactions]
     }), 200
+
+
+@statements_bp.route('/transactions', methods=['GET'])
+@jwt_required()
+def get_all_transactions():
+    """Get all transactions for the authenticated user with optional filters"""
+    current_user_id = get_jwt_identity()
+
+    # Get query parameters
+    start_date = request.args.get('start_date')
+    end_date = request.args.get('end_date')
+    category = request.args.get('category')
+    merchant = request.args.get('merchant')
+    min_amount = request.args.get('min_amount', type=float)
+    max_amount = request.args.get('max_amount', type=float)
+    limit = request.args.get('limit', 50, type=int)
+    offset = request.args.get('offset', 0, type=int)
+
+    try:
+        # Base query - get transactions for user's cards
+        query = db.session.query(Transaction).join(PDFExtractable).join(Card).filter(
+            Card.user_id == current_user_id
+        )
+
+        # Apply filters
+        if start_date:
+            query = query.filter(Transaction.date >= start_date)
+        if end_date:
+            query = query.filter(Transaction.date <= end_date)
+        if category:
+            query = query.filter(Transaction.category == category)
+        if merchant:
+            query = query.filter(Transaction.merchant.ilike(f'%{merchant}%'))
+        if min_amount is not None:
+            query = query.filter(Transaction.amount >= min_amount)
+        if max_amount is not None:
+            query = query.filter(Transaction.amount <= max_amount)
+
+        # Order by date (newest first) and apply pagination
+        transactions = query.order_by(
+            Transaction.date.desc()).offset(offset).limit(limit).all()
+
+        return jsonify([{
+            "id": t.id,
+            "date": t.date,
+            "description": t.description,
+            "description_original": t.description_original,
+            "amount": t.amount,
+            "pdf_id": t.pdf_id,
+            "category": t.category,
+            "merchant": t.merchant,
+            "is_installment": t.is_installment,
+            "installment_info": t.installment_info,
+            "created_at": t.created_at.isoformat(),
+            "updated_at": t.updated_at.isoformat()
+        } for t in transactions]), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@statements_bp.route('/transactions/summary', methods=['GET'])
+@jwt_required()
+def get_transaction_summary():
+    """Get transaction summary by type/category"""
+    current_user_id = get_jwt_identity()
+    start_date = request.args.get('start_date')
+    end_date = request.args.get('end_date')
+
+    try:
+        # Base query
+        query = db.session.query(Transaction).join(PDFExtractable).join(Card).filter(
+            Card.user_id == current_user_id
+        )
+
+        if start_date:
+            query = query.filter(Transaction.date >= start_date)
+        if end_date:
+            query = query.filter(Transaction.date <= end_date)
+
+        transactions = query.all()
+
+        # Group by transaction type (simplified)
+        summary = {}
+        for t in transactions:
+            # Determine type based on description/amount
+            if 'pix' in t.description.lower():
+                trans_type = 'Pix'
+            elif 'ted' in t.description.lower():
+                trans_type = 'TED'
+            elif 'boleto' in t.description.lower():
+                trans_type = 'Boleto'
+            elif t.amount < 0:
+                trans_type = 'Cartão de Crédito'
+            else:
+                trans_type = 'Cartão de Débito'
+
+            if trans_type not in summary:
+                summary[trans_type] = {'total': 0, 'count': 0}
+
+            summary[trans_type]['total'] += abs(t.amount)
+            summary[trans_type]['count'] += 1
+
+        result = []
+        for type_name, data in summary.items():
+            result.append({
+                'type': type_name,
+                'total': data['total'],
+                'count': data['count'],
+                'change_percentage': 0.0
+            })
+
+        return jsonify(result), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@statements_bp.route('/transactions/categories', methods=['GET'])
+@jwt_required()
+def get_spending_by_category():
+    """Get spending breakdown by category"""
+    current_user_id = get_jwt_identity()
+    start_date = request.args.get('start_date')
+    end_date = request.args.get('end_date')
+
+    try:
+        query = db.session.query(Transaction).join(PDFExtractable).join(Card).filter(
+            Card.user_id == current_user_id
+        )
+
+        if start_date:
+            query = query.filter(Transaction.date >= start_date)
+        if end_date:
+            query = query.filter(Transaction.date <= end_date)
+
+        transactions = query.all()
+
+        # Group by category
+        categories = {}
+        total_amount = 0
+
+        for t in transactions:
+            category = t.category or 'Não categorizado'
+            amount = abs(t.amount)
+
+            if category not in categories:
+                categories[category] = {'amount': 0, 'count': 0}
+
+            categories[category]['amount'] += amount
+            categories[category]['count'] += 1
+            total_amount += amount
+
+        result = []
+        for category, data in categories.items():
+            percentage = (data['amount'] / total_amount *
+                          100) if total_amount > 0 else 0
+            result.append({
+                'category': category,
+                'amount': data['amount'],
+                'percentage': round(percentage, 2),
+                'transaction_count': data['count']
+            })
+
+        # Sort by amount (highest first)
+        result.sort(key=lambda x: x['amount'], reverse=True)
+
+        return jsonify(result), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500

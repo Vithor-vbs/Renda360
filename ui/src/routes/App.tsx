@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import AppLayout from "../components/layout/AppLayout";
-import { Home } from "../microFront/home";
-import TransactionsPage from "../microFront/transactions/TransactionsPage";
+import HomeWithAPI from "../microFront/home/HomeWithAPI";
+import TransactionsPageWithAPI from "../microFront/transactions/TransactionsPageWithAPI";
 import NotificationPage from "../microFront/notification/NotificationPage";
 import ExtractFilePage from "../microFront/extractorFile/ExtractFilePage";
 import LoginPage from "../microFront/Auth/Login/LoginPage";
@@ -23,8 +23,11 @@ function App() {
               {/* Protected routes */}
               <Route element={<ProtectedRoute />}>
                 <Route element={<AppLayout />}>
-                  <Route path="/home" element={<Home />} />
-                  <Route path="/transactions" element={<TransactionsPage />} />
+                  <Route path="/home" element={<HomeWithAPI />} />
+                  <Route
+                    path="/transactions"
+                    element={<TransactionsPageWithAPI />}
+                  />
                   <Route path="/notification" element={<NotificationPage />} />
                   <Route path="/extractor" element={<ExtractFilePage />} />
                   <Route path="/settingsPage" element={<SettingsPage />} />

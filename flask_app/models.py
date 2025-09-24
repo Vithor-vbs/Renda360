@@ -31,6 +31,8 @@ class PDFExtractable(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     card_id = db.Column(db.Integer, db.ForeignKey('card.id'), nullable=False)
     file_name = db.Column(db.String(256), nullable=False)
+    # MD5 hash for duplicate detection
+    file_hash = db.Column(db.String(32), nullable=True, index=True)
     uploaded_at = db.Column(db.DateTime, server_default=db.func.now())
     statement_date = db.Column(db.String(20), nullable=True)
     statement_period_start = db.Column(db.String(20), nullable=True)

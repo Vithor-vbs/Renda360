@@ -6,6 +6,7 @@ import NotificationPopup from "../../microFront/notification/NotificationPopup";
 import { JuliusAIManager } from "../JuliusAIManager/JuliusAIManager";
 import "./AppLayout.css";
 import { useAuth } from "@/context/AuthContext";
+import { SidebarProvider, useSidebar } from "@/context/SidebarContext";
 
 const mockNotifications = [
   {
@@ -22,11 +23,12 @@ const mockNotifications = [
   },
 ];
 
-const AppLayout: React.FC = () => {
+const AppLayoutContent: React.FC = () => {
   const [hovering, setHovering] = useState(false);
   const [notifications, setNotifications] = useState(mockNotifications);
   const navigate = useNavigate();
   const location = useLocation();
+  const { isCollapsed } = useSidebar();
 
   const handleClose = () => {
     setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
@@ -47,7 +49,11 @@ const AppLayout: React.FC = () => {
         <div className="app-layout-sideBar">
           <SidebarColumn selected={location.pathname} />
         </div>
-        <div className="app-layout-content">
+        <div
+          className={`app-layout-content ${
+            isCollapsed ? "sidebar-collapsed" : ""
+          }`}
+        >
           {hovering && (
             <NotificationPopup
               notifications={notifications}
@@ -61,6 +67,14 @@ const AppLayout: React.FC = () => {
       {/* Floating Julius AI Manager Button*/}
       <JuliusAIManager />
     </div>
+  );
+};
+
+const AppLayout: React.FC = () => {
+  return (
+    <SidebarProvider>
+      <AppLayoutContent />
+    </SidebarProvider>
   );
 };
 

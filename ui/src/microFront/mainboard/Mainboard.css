@@ -1,13 +1,43 @@
 .main-board {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    padding: 0 2rem;
-  }
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 0 2rem;
+  transition: padding 0.3s ease;
+}
+
+/* When sidebar is collapsed, reduce padding to utilize extra space */
+.app-layout-content.sidebar-collapsed .main-board {
+  padding: 0 1rem 0 3rem;
+}
 
 .charts-and-goals {
   display: flex;
   gap: 2rem;
   align-items: flex-start;
+  transition: gap 0.3s ease;
 }
-  
+
+/* Increase gap between charts when more space is available */
+.app-layout-content.sidebar-collapsed .charts-and-goals {
+  gap: 3rem;
+}
+
+.chart-container {
+  transition: all 0.3s ease;
+  width: 100%;
+}
+
+.goals-container {
+  transition: all 0.3s ease;
+  min-width: 300px;
+}
+
+/* Make charts more responsive when sidebar is collapsed */
+.app-layout-content.sidebar-collapsed .chart-container {
+  min-width: 400px;
+}
+
+.app-layout-content.sidebar-collapsed .goals-container {
+  min-width: 380px;
+}
