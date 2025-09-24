@@ -72,7 +72,7 @@ const settingsPage: React.FC = () => {
       disableNotifications,
     };
     sessionStorage.setItem(SETTINGS_KEY, JSON.stringify(payload));
-    setSavedMsg("Preferências salvas na sessão.");
+    setSavedMsg("Configurações salvas!");
     setTimeout(() => setSavedMsg(""), 2500);
   };
 
@@ -113,7 +113,7 @@ const settingsPage: React.FC = () => {
               className="form-input"
               type="number"
               inputMode="decimal"
-              step="0.01"
+              step="100"
               placeholder="Ex.: 5000.00"
               value={income}
               onChange={(e) => setIncome(e.target.value)}
