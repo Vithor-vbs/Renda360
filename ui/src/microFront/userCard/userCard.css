@@ -53,3 +53,11 @@
   font-size: 0.9rem;
   color: #a1a1aa;
 }
+
+.user-picture img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 12px; /* mantém o estilo arredondado */
+}
+
