@@ -3,6 +3,7 @@ import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import { SidebarColumn } from "../../microFront/sidebar/SidebarColumn";
 import Banner from "../../microFront/banner/Banner";
 import NotificationPopup from "../../microFront/notification/NotificationPopup";
+import { JuliusAIManager } from "../JuliusAIManager/JuliusAIManager";
 import "./AppLayout.css";
 import { useAuth } from "@/context/AuthContext";
 
@@ -56,6 +57,9 @@ const AppLayout: React.FC = () => {
           <Outlet />
         </div>
       </div>
+
+      {/* Floating Julius AI Manager Button*/}
+      <JuliusAIManager />
     </div>
   );
 };

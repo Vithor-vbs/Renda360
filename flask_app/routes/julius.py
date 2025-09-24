@@ -60,17 +60,26 @@ def get_conversation_history():
 
     try:
         ai = JuliusAI(user_id, session_id=session_id)
+        # Ensure session is initialized to find existing conversations
+        ai.get_or_create_conversation_session()
         history = ai.get_conversation_history(limit=limit)
 
         return jsonify({
-            "history": history,
+            "success": True,
+            "messages": history,
             "session_id": ai.session_id,
-            "count": len(history)
+            "total_messages": len(history)
         }), 200
 
     except Exception as e:
         logger.exception(f"Error in /conversation/history: {str(e)}")
-        return jsonify({"error": str(e)}), 500
+        return jsonify({
+            "success": False,
+            "error": str(e),
+            "messages": [],
+            "session_id": None,
+            "total_messages": 0
+        }), 500
 
 
 @julius_bp.route('/conversation/clear', methods=['POST'])
@@ -83,10 +92,12 @@ def clear_conversation():
 
     try:
         ai = JuliusAI(user_id, session_id=session_id)
+        # Ensure session is initialized to find existing conversations
+        ai.get_or_create_conversation_session()
         cleared = ai.clear_conversation()
 
         return jsonify({
-            "cleared": cleared,
+            "success": cleared,
             "message": "Conversa limpa com sucesso!" if cleared else "Nenhuma conversa ativa encontrada."
         }), 200
 
@@ -114,17 +125,19 @@ def conversation_status():
             message_count = len(active_session.messages)
 
             return jsonify({
-                "has_active_session": True,
-                "session_id": active_session.session_id,
-                "message_count": message_count,
-                "created_at": active_session.created_at.isoformat(),
-                "updated_at": active_session.updated_at.isoformat()
+                "success": True,
+                "conversation": {
+                    "session_id": active_session.session_id,
+                    "total_messages": message_count,
+                    "is_active": True,
+                    "created_at": active_session.created_at.isoformat(),
+                    "updated_at": active_session.updated_at.isoformat()
+                }
             }), 200
         else:
             return jsonify({
-                "has_active_session": False,
-                "session_id": None,
-                "message_count": 0
+                "success": True,
+                "conversation": None
             }), 200
 
     except Exception as e:

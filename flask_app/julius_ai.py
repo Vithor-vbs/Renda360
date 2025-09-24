@@ -677,10 +677,14 @@ class JuliusAI:
         history = []
         for message in reversed(messages):
             history.append({
-                'type': message.message_type,
+                'id': message.id,
+                'message_type': message.message_type,
                 'content': message.content,
-                'timestamp': message.created_at.isoformat(),
-                'query_type': message.query_type
+                'created_at': message.created_at.isoformat(),
+                'query_type': message.query_type,
+                'optimization_level': message.optimization_level,
+                'response_time_ms': message.response_time_ms,
+                'cost_estimate': message.cost_estimate
             })
 
         return history

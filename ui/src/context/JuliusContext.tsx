@@ -48,6 +48,7 @@ export const JuliusProvider = ({ children }: { children: React.ReactNode }) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(false);
   const [sessionId, setSessionId] = useState<string | null>(null);
+  const [isInitialized, setIsInitialized] = useState(false);
   const [conversationStatus, setConversationStatus] =
     useState<ConversationStatus | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -63,21 +64,38 @@ export const JuliusProvider = ({ children }: { children: React.ReactNode }) => {
 
   // Initialize conversation when user is authenticated
   useEffect(() => {
-    if (isAuthenticated && loggedUser) {
+    if (isAuthenticated && loggedUser && !isInitialized) {
+      setIsInitialized(true);
       refreshHistory();
       getConversationStatus();
-    } else {
+    } else if (!isAuthenticated) {
       // Reset state when user logs out
       setMessages([]);
       setSessionId(null);
       setConversationStatus(null);
+      setLoading(false);
+      setIsInitialized(false);
     }
-  }, [isAuthenticated, loggedUser]);
+  }, [isAuthenticated, loggedUser, isInitialized]);
 
   const refreshHistory = async () => {
-    if (!loggedUser || !isAuthenticated) return;
+    if (!loggedUser || !isAuthenticated) {
+      console.log(
+        "Cannot refresh history: user not authenticated or logged in"
+      );
+      return;
+    }
+
+    console.log("Refreshing conversation history for user:", loggedUser.id);
+
+    // Set a timeout to prevent loading state from getting stuck
+    const timeoutId = setTimeout(() => {
+      console.warn("History loading timeout - forcing loading state to false");
+      setLoading(false);
+    }, 10000); // 10 second timeout
 
     try {
+      setLoading(true);
       setError(null);
       const response = await axios.get(`/julius/conversation/history`, {
         headers: getAuthHeaders(),
@@ -87,13 +105,27 @@ export const JuliusProvider = ({ children }: { children: React.ReactNode }) => {
         },
       });
 
+      clearTimeout(timeoutId); // Clear timeout on successful response
+
+      console.log("Conversation history response:", response.data);
+
       if (response.data.success) {
-        setMessages(response.data.messages || []);
-        setSessionId(response.data.session_id);
+        const messages = response.data.messages || [];
+        setMessages(messages);
+        setSessionId(response.data.session_id || null);
+        console.log("Loaded", messages.length, "messages from history");
+      } else {
+        console.log("History request unsuccessful:", response.data);
+        setMessages([]); // Ensure we set empty messages on failure
+        setSessionId(null);
       }
     } catch (err: any) {
+      clearTimeout(timeoutId); // Clear timeout on error
       console.error("Failed to load conversation history:", err);
       setError("Falha ao carregar histórico da conversa");
+      setMessages([]); // Ensure we set empty messages on error
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -122,6 +154,12 @@ export const JuliusProvider = ({ children }: { children: React.ReactNode }) => {
     setLoading(true);
     setError(null);
 
+    // Set a timeout to prevent loading state from getting stuck
+    const timeoutId = setTimeout(() => {
+      console.warn("Message sending timeout - forcing loading state to false");
+      setLoading(false);
+    }, 30000); // 30 second timeout for AI responses
+
     // Optimistically add user message
     const tempUserMessage: Message = {
       id: Date.now(),
@@ -144,6 +182,8 @@ export const JuliusProvider = ({ children }: { children: React.ReactNode }) => {
           headers: getAuthHeaders(),
         }
       );
+
+      clearTimeout(timeoutId); // Clear timeout on successful response
 
       if (response.data.error) {
         throw new Error(response.data.answer || "Erro desconhecido");
@@ -171,6 +211,7 @@ export const JuliusProvider = ({ children }: { children: React.ReactNode }) => {
       // Update conversation status
       await getConversationStatus();
     } catch (err: any) {
+      clearTimeout(timeoutId); // Clear timeout on error
       console.error("Failed to send message:", err);
       setError(
         err.response?.data?.message || err.message || "Falha ao enviar mensagem"
