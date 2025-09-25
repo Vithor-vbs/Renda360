@@ -9,6 +9,7 @@ import {
   FaChevronLeft,
   FaChevronRight,
   FaCog,
+  FaChartLine,
 } from "react-icons/fa";
 import { MdAutoAwesome } from "react-icons/md";
 import { useAuth } from "../../context/AuthContext";
@@ -71,6 +72,18 @@ export const SidebarColumn: React.FC<Props> = ({ selected }) => {
             </span>
             {!isCollapsed && <span className="sidebar-text">Extrator de Faturas</span>}
           </Link>
+        </li>
+        <li>
+        <Link
+          to="/investments"
+          className={`sidebar-item ${selected === "/investments" ? "active" : ""}`}
+          title="Investimentos"
+        >
+          <span className="sidebar-icon">
+            <FaChartLine />
+          </span>
+          {!isCollapsed && <span className="sidebar-text">Investimentos</span>}
+        </Link>
         </li>
         <li>
           <div

@@ -11,6 +11,7 @@ import { AuthProvider } from "@/context/AuthContext";
 import { JuliusProvider } from "@/context/JuliusContext";
 import { NotificationProvider } from "@/context/NotificationService";
 import SettingsPage from "@/microFront/settings/settingsPage";
+import InvestmentsDashboard from "@/microFront/investments/investmentsDashboard";
 
 function App() {
   return (
@@ -20,20 +21,16 @@ function App() {
           <JuliusProvider>
             <Routes>
               <Route path="/" element={<Navigate to="/home" replace />} />
-              {/* Protected routes */}
               <Route element={<ProtectedRoute />}>
                 <Route element={<AppLayout />}>
                   <Route path="/home" element={<HomeWithAPI />} />
-                  <Route
-                    path="/transactions"
-                    element={<TransactionsPageWithAPI />}
-                  />
+                  <Route path="/transactions" element={<TransactionsPageWithAPI />} />
                   <Route path="/notification" element={<NotificationPage />} />
                   <Route path="/extractor" element={<ExtractFilePage />} />
-                  <Route path="/settingsPage" element={<SettingsPage />} />
+                  <Route path="/settings" element={<SettingsPage />} />
+                  <Route path="/investments" element={<InvestmentsDashboard />} />
                 </Route>
               </Route>
-              {/* Public routes */}
               <Route path="/login" element={<LoginPage />} />
               <Route path="/register" element={<RegisterPage />} />
             </Routes>
