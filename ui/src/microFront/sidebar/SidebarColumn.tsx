@@ -52,7 +52,9 @@ export const SidebarColumn: React.FC<Props> = ({ selected }) => {
         <li>
           <Link
             to="/transactions"
-            className={`sidebar-item ${selected === "/transactions" ? "active" : ""}`}
+            className={`sidebar-item ${
+              selected === "/transactions" ? "active" : ""
+            }`}
             title="Transações"
           >
             <span className="sidebar-icon">
@@ -64,30 +66,40 @@ export const SidebarColumn: React.FC<Props> = ({ selected }) => {
         <li>
           <Link
             to="/extractor"
-            className={`sidebar-item ${selected === "/extractor" ? "active" : ""}`}
+            className={`sidebar-item ${
+              selected === "/extractor" ? "active" : ""
+            }`}
             title="Extrator de Faturas"
           >
             <span className="sidebar-icon">
               <FaUniversity />
             </span>
-            {!isCollapsed && <span className="sidebar-text">Extrator de Faturas</span>}
+            {!isCollapsed && (
+              <span className="sidebar-text">Extrator de Faturas</span>
+            )}
           </Link>
         </li>
         <li>
-        <Link
-          to="/investments"
-          className={`sidebar-item ${selected === "/investments" ? "active" : ""}`}
-          title="Investimentos"
-        >
-          <span className="sidebar-icon">
-            <FaChartLine />
-          </span>
-          {!isCollapsed && <span className="sidebar-text">Investimentos</span>}
-        </Link>
+          <Link
+            to="/investments"
+            className={`sidebar-item ${
+              selected === "/investments" ? "active" : ""
+            }`}
+            title="Investimentos"
+          >
+            <span className="sidebar-icon">
+              <FaChartLine />
+            </span>
+            {!isCollapsed && (
+              <span className="sidebar-text">Investimentos</span>
+            )}
+          </Link>
         </li>
         <li>
           <div
-            className={`sidebar-item ${selected === "/julius-ai" ? "active" : ""}`}
+            className={`sidebar-item ${
+              selected === "/julius-ai" ? "active" : ""
+            }`}
             title="Julius IA"
           >
             <span className="sidebar-icon">
@@ -99,7 +111,9 @@ export const SidebarColumn: React.FC<Props> = ({ selected }) => {
         <li>
           <Link
             to="/notification"
-            className={`sidebar-item ${selected === "/notification" ? "active" : ""}`}
+            className={`sidebar-item ${
+              selected === "/notification" ? "active" : ""
+            }`}
             title="Notificações"
           >
             <span className="sidebar-icon">
@@ -113,8 +127,10 @@ export const SidebarColumn: React.FC<Props> = ({ selected }) => {
       <div className="sidebar-bottom">
         <button
           type="button"
-          className={`sidebar-item sidebar-button ${selected === "/settings" ? "active" : ""}`}
-          onClick={() => navigate("/settingsPage")}
+          className={`sidebar-item sidebar-button ${
+            selected === "/settings" ? "active" : ""
+          }`}
+          onClick={() => navigate("/settings")}
           title="Configurações"
         >
           <span className="sidebar-icon">

@@ -39,7 +39,7 @@ const Banner: React.FC<BannerProps> = ({ onNotificationHover, clientName }) => {
           className="settings-button"
           src={settingsIcon}
           alt="Configurações"
-          onClick={() => navigate("/settingsPage")}
+          onClick={() => navigate("/settings")}
         />
       </div>
     </div>

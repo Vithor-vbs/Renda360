@@ -11,7 +11,7 @@ import { AuthProvider } from "@/context/AuthContext";
 import { JuliusProvider } from "@/context/JuliusContext";
 import { NotificationProvider } from "@/context/NotificationService";
 import SettingsPage from "@/microFront/settings/settingsPage";
-import InvestmentsDashboard from "@/microFront/investments/investmentsDashboard";
+import InvestmentsDashboard from "@/microFront/investments/InvestmentsDashboard";
 
 function App() {
   return (
@@ -24,11 +24,17 @@ function App() {
               <Route element={<ProtectedRoute />}>
                 <Route element={<AppLayout />}>
                   <Route path="/home" element={<HomeWithAPI />} />
-                  <Route path="/transactions" element={<TransactionsPageWithAPI />} />
+                  <Route
+                    path="/transactions"
+                    element={<TransactionsPageWithAPI />}
+                  />
                   <Route path="/notification" element={<NotificationPage />} />
                   <Route path="/extractor" element={<ExtractFilePage />} />
                   <Route path="/settings" element={<SettingsPage />} />
-                  <Route path="/investments" element={<InvestmentsDashboard />} />
+                  <Route
+                    path="/investments"
+                    element={<InvestmentsDashboard />}
+                  />
                 </Route>
               </Route>
               <Route path="/login" element={<LoginPage />} />
