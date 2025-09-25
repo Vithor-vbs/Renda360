@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useMemo } from "react";
-import "./investmentsDashboard.css";
+import "./InvestmentsDashboard.css";
 import { TrendingUp, TrendingDown, DollarSign, Target, Bitcoin, LineChart, Briefcase, RefreshCcw } from "lucide-react";
 import ButtonDate from "../buttonDate/buttonDate";
 

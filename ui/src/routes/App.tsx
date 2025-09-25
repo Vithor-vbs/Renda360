@@ -11,7 +11,7 @@ import { AuthProvider } from "@/context/AuthContext";
 import { JuliusProvider } from "@/context/JuliusContext";
 import { NotificationProvider } from "@/context/NotificationService";
 import SettingsPage from "@/microFront/settings/settingsPage";
-import InvestmentsDashboard from "@/microFront/investments/investmentsDashboard";
+import InvestmentsDashboard from "@/microFront/investments/InvestmentsDashboard";
 
 function App() {
   return (
