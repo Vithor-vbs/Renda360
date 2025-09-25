@@ -68,32 +68,39 @@ OPENAI_API_KEY= 💩
 
 ```bash
 # Create virtual environment (if not exists)
-python3 -m venv pyenv
-source pyenv/bin/activate  # Windows: pyenv\Scripts\activate
+python3 -m venv venv
+source venv/bin/activate  # Windows: venv\Scripts\activate
 
 # Install dependencies
 pip install -r requirements.txt
 ```
 
-4. **Frontend Dependencies**
-
-```bash
-cd ui/
-npm install
-cd ..
-```
-
-5. **Database Setup**
+4. **Database Setup & Flask start**
 
 ```bash
 # Start PostgreSQL container
-docker-compose up -d
+docker-compose up --build
 
+# Run Flask app
+flask run
+```
+
+5. run database migration
+
+```bash
 # Wait for database to be ready, then run migrations
 flask db upgrade
 ```
 
-**Note:** Migrations are located in `flask_app/migrations/` and are automatically configured.
+6. **Frontend Dependencies and start**
+
+```bash
+cd ui/
+npm install
+
+# Start ui
+npm run dev
+```
 
 ## Database Schema
 
@@ -130,7 +137,7 @@ docker-compose up -d
 
 ```bash
 # Activate virtual environment
-source pyenv/bin/activate  # Windows: pyenv\Scripts\activate
+source venv/bin/activate  # Windows: venv\Scripts\activate
 
 # Run Flask server
 flask run
