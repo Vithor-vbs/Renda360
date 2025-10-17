@@ -95,7 +95,7 @@ export const SidebarColumn: React.FC<Props> = ({ selected }) => {
             )}
           </Link>
         </li>
-        <li>
+        {/* <li>
           <div
             className={`sidebar-item ${
               selected === "/julius-ai" ? "active" : ""
@@ -107,8 +107,8 @@ export const SidebarColumn: React.FC<Props> = ({ selected }) => {
             </span>
             {!isCollapsed && <span className="sidebar-text">Julius IA</span>}
           </div>
-        </li>
-        <li>
+        </li> */}
+        {/* <li>
           <Link
             to="/notification"
             className={`sidebar-item ${
@@ -121,7 +121,7 @@ export const SidebarColumn: React.FC<Props> = ({ selected }) => {
             </span>
             {!isCollapsed && <span className="sidebar-text">Notificações</span>}
           </Link>
-        </li>
+        </li> */}
       </ul>
 
       <div className="sidebar-bottom">
