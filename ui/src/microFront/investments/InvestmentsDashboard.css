@@ -39,12 +39,21 @@
   max-width: 100%;
 }
 
+.header-subtitle {
+  color: #8a8a8a;
+  font-size: 0.875rem;
+}
+
 .inv-panel {
   background-color: #292929;
   border-radius: 1rem;
   box-shadow: 0 4px 12px rgba(0,0,0,.4);
   color: #f4f4f5;
   padding: 1.5rem;
+}
+
+.inv-panel-start {
+  color: #f4f4f5;
 }
 
 .inv-panel-fixed {
@@ -89,7 +98,7 @@
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  background: #167a6b;
+  background: #1ea896;
   border: 1px solid #2f2f2f;
   color: #fff;
   padding: 0.6rem 1rem;

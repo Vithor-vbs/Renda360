@@ -58,7 +58,7 @@ const InvestmentHeader: React.FC<{
   reloading: boolean;
 }> = ({onReload, reloading }) => {
   return (
-    <div className="inv-panel inv-header">
+    <div className="inv-panel-start inv-header">
       <div className="inv-header-top">
         <h1>Dashboard de Investimentos</h1>
         <div className="inv-actions">
@@ -73,6 +73,9 @@ const InvestmentHeader: React.FC<{
           </button>
         </div>
       </div>
+        <p className="header-subtitle">
+          Consulte seus investimentos
+        </p>
     </div>
   );
 };

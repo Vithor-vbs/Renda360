@@ -1,32 +1,92 @@
 .balances-row {
-  display: flex;
-  gap: 2rem;
-  margin: 2rem 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.25rem;
+  margin: 1.5rem 0;
 }
 
 .balance-card {
-  flex: 1;
-  border-radius: 1.5rem;
-  padding: 1.5rem;
+  background: #292929;
+  border-radius: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+  padding: 1.25rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  background-color: #292929;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
-.card-label {
-  color: #8a8a8a;
-  font-size: 0.875rem;
+.balance-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.45);
 }
 
-.card-value {
-  color: #fff;
-  font-size: 1.5rem;
-  font-weight: 600;
+.balance-card .label {
+  color: #9ca3af;
+  font-size: 0.9rem;
+  margin: 0;
+  font-weight: 500;
 }
 
+.balance-card .value {
+  font-size: 1.9rem;
+  font-weight: 800;
+  color: #f4f4f5;
+  margin: 0.2rem 0;
+}
 
-.card-1{
-  color: #8A05BE;
+.balance-card .value.positive {
+  color: #10b981;
+}
+
+.balance-card .value.negative {
+  color: #ef4444;
+}
+
+.balance-card .subtitle {
+  color: #6b7280;
+  font-size: 0.85rem;
+  margin-top: 0.25rem;
+  font-weight: 500;
+}
+
+/* Loading skeleton */
+.balance-card.loading {
+  pointer-events: none;
+}
+
+.skeleton-text {
+  background: linear-gradient(
+    90deg,
+    #1f1f1f 25%,
+    #2a2a2a 50%,
+    #1f1f1f 75%
+  );
+  background-size: 200% 100%;
+  animation: loading 1.5s ease-in-out infinite;
+  border-radius: 0.5rem;
+  height: 1.5rem;
+  width: 70%;
+}
+
+.skeleton-text.small {
+  height: 1rem;
+  width: 50%;
+  margin-top: 0.5rem;
+}
+
+@keyframes loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .balances-row {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
 }
