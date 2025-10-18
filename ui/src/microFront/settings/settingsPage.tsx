@@ -1,7 +1,9 @@
 import React, { useEffect, useMemo, useRef, useState } from "react"
 import "./settingsPage.css"
 import { useAuth } from "@/context/AuthContext"
-import { User, Phone, Mail, Globe } from "lucide-react"
+import { User, Phone, Mail, Globe, CreditCard } from "lucide-react"
+import CardFinance, { FinanceCard } from "@/components/Cards/CardFinance"
+import { AddCardModal } from "@/components/Cards/AddCardModal"
 
 type UserSettings = {
   avatar?: string | null
@@ -17,8 +19,27 @@ const SettingsPage: React.FC = () => {
 
   const [avatar, setAvatar] = useState<string | null>(null)
   const fileRef = useRef<HTMLInputElement | null>(null)
-
   const [activeTab, setActiveTab] = useState<"perfil" | "config">("perfil")
+
+  const [cards] = useState<FinanceCard[]>([
+    {
+      id: "1",
+      title: "Cartão Principal",
+      balance: 26968,
+      number: "** ** ** 3765",
+      brand: "visa",
+      color: "linear-gradient(135deg, #10b981, #0ea5e9)"
+    },
+    {
+      id: "2",
+      title: "Cartão Reserva",
+      balance: 12450,
+      number: "** ** ** 8902",
+      brand: "mastercard",
+      color: "linear-gradient(135deg, #6366f1, #3b82f6)"
+    }
+  ])
+  const [isModalOpen, setIsModalOpen] = useState(false)
 
   useEffect(() => {
     try {
@@ -27,7 +48,7 @@ const SettingsPage: React.FC = () => {
         const parsed: UserSettings = JSON.parse(raw)
         if (parsed.avatar) setAvatar(parsed.avatar)
       }
-    } catch {}
+    } catch { }
   }, [])
 
   const onPickAvatar = () => fileRef.current?.click()
@@ -44,7 +65,7 @@ const SettingsPage: React.FC = () => {
         const current = sessionStorage.getItem(SETTINGS_KEY)
         const parsed = current ? (JSON.parse(current) as UserSettings) : {}
         sessionStorage.setItem(SETTINGS_KEY, JSON.stringify({ ...parsed, avatar: dataUrl }))
-      } catch {}
+      } catch { }
     }
     reader.readAsDataURL(file)
   }
@@ -63,16 +84,8 @@ const SettingsPage: React.FC = () => {
 
       {/* CARD DE PERFIL */}
       <section className="profile-card">
-        <div
-          className="avatar-wrap"
-          onClick={onPickAvatar}
-          role="button"
-          aria-label="Alterar foto do perfil"
-        >
-          <div
-            className="avatar"
-            style={avatar ? { backgroundImage: `url(${avatar})` } : undefined}
-          >
+        <div className="avatar-wrap" onClick={onPickAvatar} role="button" aria-label="Alterar foto">
+          <div className="avatar" style={avatar ? { backgroundImage: `url(${avatar})` } : undefined}>
             {!avatar && <span className="avatar-initial">{initials}</span>}
           </div>
         </div>
@@ -80,7 +93,6 @@ const SettingsPage: React.FC = () => {
         <div className="profile-info">
           <h1 className="profile-name">{name}</h1>
           <p className="profile-email">{email}</p>
-
           <div className="profile-badges">
             <span className="badge badge--role">Investidor Moderado</span>
           </div>
@@ -107,67 +119,79 @@ const SettingsPage: React.FC = () => {
         </button>
         <span
           className="tab-indicator"
-          style={{
-            transform: activeTab === "perfil" ? "translateX(0)" : "translateX(100%)",
-          }}
+          style={{ transform: activeTab === "perfil" ? "translateX(0)" : "translateX(100%)" }}
         />
       </nav>
 
       {/* CONTEÚDO DAS ABAS */}
       <div className="tab-content">
         {activeTab === "perfil" && (
-          <section className="info-section">
-            <h2 className="info-title">
-              <span className="title-icon">
-                <User className="w-5 h-5" />
-              </span>
-              Informações Pessoais
-            </h2>
+          <>
+            <section className="info-section">
+              <h2 className="info-title">
+                <span className="title-icon"><User /></span>
+                Informações Pessoais
+              </h2>
 
-            <div className="info-grid">
-              <div className="info-card">
-                <span className="info-icon">
-                  <User className="w-4 h-4" />
-                </span>
-                <div>
-                  <span className="info-label">Nome Completo</span>
-                  <p className="info-value">{name}</p>
+              <div className="info-grid">
+                <div className="info-card">
+                  <User className="info-icon" />
+                  <div>
+                    <span className="info-label">Nome Completo</span>
+                    <p className="info-value">{name}</p>
+                  </div>
+                </div>
+                <div className="info-card">
+                  <Phone className="info-icon" />
+                  <div>
+                    <span className="info-label">Telefone</span>
+                    <p className="info-value">+55 (11) 99999-9999</p>
+                  </div>
+                </div>
+                <div className="info-card">
+                  <Mail className="info-icon" />
+                  <div>
+                    <span className="info-label">Email</span>
+                    <p className="info-value">{email}</p>
+                  </div>
+                </div>
+                <div className="info-card">
+                  <Globe className="info-icon" />
+                  <div>
+                    <span className="info-label">Localização</span>
+                    <p className="info-value">São Paulo, Brasil</p>
+                  </div>
                 </div>
               </div>
+              <div className="divider" />
 
-              <div className="info-card">
-                <span className="info-icon">
-                  <Phone className="w-4 h-4" />
-                </span>
-                <div>
-                  <span className="info-label">Telefone</span>
-                  <p className="info-value">+55 (11) 99999-9999</p>
+              {/* Meus Cartões */}
+              <h2 className="info-title" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "0.6rem" }}>
+                  <span className="title-icon"><CreditCard /></span>
+                  Meus Cartões
                 </div>
+                <button className="add-card-btn badge-like" onClick={() => setIsModalOpen(true)}>
+                  + Adicionar
+                </button>
+
+              </h2>
+              <div className="cards-grid">
+                {cards.map((c) => (
+                  <CardFinance key={c.id} card={c} />
+                ))}
               </div>
 
-              <div className="info-card">
-                <span className="info-icon">
-                  <Mail className="w-4 h-4" />
-                </span>
-                <div>
-                  <span className="info-label">Email</span>
-                  <p className="info-value">{email}</p>
-                </div>
-              </div>
-
-              <div className="info-card">
-                <span className="info-icon">
-                  <Globe className="w-4 h-4" />
-                </span>
-                <div>
-                  <span className="info-label">Localização</span>
-                  <p className="info-value">São Paulo, Brasil</p>
-                </div>
-              </div>
-            </div>
-          </section>
+            </section>
+          </>
         )}
       </div>
+      {/* MODAL PARA ADICIONAR NOVO CARTÃO */}
+      <AddCardModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSave={(newCard) => console.log("Novo cartão:", newCard)}
+      />
     </div>
   )
 }

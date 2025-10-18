@@ -1,0 +1,64 @@
+.card {
+    position: relative;
+    border-radius: 16px;
+    padding: 1.25rem;
+    color: #fff;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, .35);
+    transition: transform .2s ease, box-shadow .2s ease;
+    overflow: hidden;
+    display: grid;
+    gap: .75rem;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 16px 30px rgba(0, 0, 0, .45);
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.title {
+    font-weight: 600;
+    letter-spacing: .2px;
+    opacity: .95;
+}
+
+.headerIcon {
+    width: 20px;
+    height: 20px;
+    opacity: .8;
+}
+
+.balance {
+    font-size: 1.75rem;
+    font-weight: 800;
+    letter-spacing: .2px;
+}
+
+.number {
+  display: block;       
+  margin-top: .25rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 1.05rem;
+  letter-spacing: .06em;
+  opacity: .95;
+}
+
+.brand {
+    margin-top: .25rem;
+    margin-left: auto;
+    font-weight: 700;
+    letter-spacing: 1px;
+    opacity: .9;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.header svg { display: block; }
