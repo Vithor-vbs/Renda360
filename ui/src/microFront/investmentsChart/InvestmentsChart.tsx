@@ -77,9 +77,9 @@ const InvestmentsChart: React.FC<InvestmentsChartProps> = ({ cryptoData, stocksD
             <label htmlFor={asset.id}>{asset.symbol}</label>
           </React.Fragment>
         ))}
-        <div className="inv-slider" style={{
-          transform: `translateX(${allAssets.findIndex(a => a.id === selectedAsset) * 105}%)`
-        }} />
+<div className="inv-slider" style={{
+  transform: `translateX(calc(${allAssets.findIndex(a => a.id === selectedAsset)} * (100% + 0.5rem)))`
+}} />
       </fieldset>
 
       <div className="inv-price-infos">

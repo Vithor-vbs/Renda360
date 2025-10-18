@@ -52,7 +52,7 @@ body,
 }
 
 /* Adjust goals section when more space is available */
-.app-layout-content.sidebar-collapsed .goals-container {
+.app-layout-content.sidebar-collapsed .goals-container-wrapper {
   min-width: 400px;
 }
 

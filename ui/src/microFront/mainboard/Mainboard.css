@@ -25,12 +25,12 @@
 
 .chart-container {
   transition: all 0.3s ease;
-  width: 100%;
 }
 
 .goals-container {
   transition: all 0.3s ease;
   min-width: 300px;
+  width: 100%;
 }
 
 /* Make charts more responsive when sidebar is collapsed */

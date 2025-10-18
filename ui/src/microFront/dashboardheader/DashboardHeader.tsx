@@ -1,6 +1,5 @@
 import React from "react";
 import "./DashboardHeader.css";
-import { Button } from "../button/Button";
 import ButtonDate from "../buttonDate/buttonDate";
 
 export const DashboardHeader: React.FC = () => (

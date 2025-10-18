@@ -1,82 +1,53 @@
-import * as React from "react";
-import { Label, Pie, PieChart } from "recharts";
+"use client"
 
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  ChartConfig,
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from "@/components/ui/chart";
+import * as React from "react"
+import { Label, Pie, PieChart, Cell, Sector } from "recharts"
+
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { type ChartConfig, ChartContainer, ChartTooltip } from "@/components/ui/chart"
 
 interface SpendingByCategory {
-  category: string;
-  amount: number;
+  category: string
+  amount: number
 }
 
 interface Props {
-  data?: SpendingByCategory[];
-  loading?: boolean;
+  data?: SpendingByCategory[]
+  loading?: boolean
 }
 
-// Mock data for fallback - matching the reference component structure
+// Mock data for fallback
 const mockData = [
   { browser: "Utilidade", visitors: 275, fill: "#008236" },
   { browser: "Alimentação", visitors: 200, fill: "#6E11B0" },
   { browser: "Transporte", visitors: 287, fill: "#7BF1A8" },
   { browser: "Aluguel", visitors: 173, fill: "#5EF72D" },
   { browser: "Outros", visitors: 190, fill: "#AD46FF" },
-];
+]
 
 const chartConfig = {
   visitors: {
     label: "Visitors",
   },
-  chrome: {
-    label: "Chrome",
-    color: "hsl(var(--chart-1))",
-  },
-  safari: {
-    label: "Safari",
-    color: "hsl(var(--chart-2))",
-  },
-  firefox: {
-    label: "Firefox",
-    color: "hsl(var(--chart-3))",
-  },
-  edge: {
-    label: "Edge",
-    color: "hsl(var(--chart-4))",
-  },
-  other: {
-    label: "Other",
-    color: "hsl(var(--chart-5))",
-  },
-} satisfies ChartConfig;
+} satisfies ChartConfig
 
-// Color palette for dynamic categories - expanded for more variety
+// Color palette for dynamic categories
 const colors = [
-  "#008236", // Green
-  "#6E11B0", // Purple
-  "#7BF1A8", // Light Green
-  "#5EF72D", // Bright Green
-  "#AD46FF", // Light Purple
-  "#FF6B6B", // Red
-  "#4ECDC4", // Teal
-  "#45B7D1", // Blue
-  "#FFA07A", // Orange
-  "#98D8C8", // Mint
-  "#FF9F43", // Orange
-  "#70A1FF", // Light Blue
-];
+  "#008236",
+  "#6E11B0",
+  "#7BF1A8",
+  "#5EF72D",
+  "#AD46FF",
+  "#FF6B6B",
+  "#4ECDC4",
+  "#45B7D1",
+  "#FFA07A",
+  "#98D8C8",
+  "#FF9F43",
+  "#70A1FF",
+]
 
-// Category name mapping for better display - matches PDF extractor TransactionCategory enum
+// Category name mapping
 const categoryNames: Record<string, string> = {
   food_delivery: "Delivery de Comida",
   restaurants: "Restaurantes",
@@ -92,118 +63,184 @@ const categoryNames: Record<string, string> = {
   education: "Educação",
   financial_services: "Serviços Financeiros",
   others: "Outros",
-  // Legacy mappings for backward compatibility
   food: "Alimentação",
-};
+}
 
-export const PieChartComponentWithAPI: React.FC<Props> = ({
-  data,
-  loading,
-}) => {
+// Custom active shape for hover effect
+const renderActiveShape = (props: any) => {
+  const { cx, cy, innerRadius, outerRadius, startAngle, endAngle, fill } = props
+
+  return (
+    <g>
+      <Sector
+        cx={cx}
+        cy={cy}
+        innerRadius={innerRadius}
+        outerRadius={outerRadius + 8}
+        startAngle={startAngle}
+        endAngle={endAngle}
+        fill={fill}
+        style={{
+          filter: `drop-shadow(0 0 12px ${fill})`,
+          transition: "all 0.3s ease",
+        }}
+      />
+    </g>
+  )
+}
+
+export const PieChartComponentWithAPI: React.FC<Props> = ({ data, loading }) => {
+  const [activeIndex, setActiveIndex] = React.useState<number | null>(null)
+  const [hoveredCategory, setHoveredCategory] = React.useState<string | null>(null)
+
   // Process API data or use mock data
   const chartData = React.useMemo(() => {
     if (data && data.length > 0) {
       return data.map((item, index) => ({
-        browser: categoryNames[item.category] || item.category, // Use friendly name or fallback to original
-        visitors: Math.abs(item.amount), // Ensure positive values
+        browser: categoryNames[item.category] || item.category,
+        visitors: Math.abs(item.amount),
         fill: colors[index % colors.length],
-      }));
+      }))
     }
-    return mockData;
-  }, [data]);
+    return mockData
+  }, [data])
 
   const totalVisitors = React.useMemo(() => {
-    return chartData.reduce((acc, curr) => acc + curr.visitors, 0);
-  }, [chartData]);
+    return chartData.reduce((acc, curr) => acc + curr.visitors, 0)
+  }, [chartData])
+
+  const getPercentage = (value: number) => {
+    return ((value / totalVisitors) * 100).toFixed(1)
+  }
 
   if (loading) {
     return (
       <Card
-        className="flex flex-col mt-8"
+        className="flex flex-col mt-8 border-0"
         style={{
           backgroundColor: "#292929",
-          borderColor: "#292929",
-          boxShadow: "0 4px 12px rgba(0, 0, 0, 0.3)",
+          boxShadow: "0 8px 32px rgba(0, 0, 0, 0.4)",
           maxWidth: "20vw",
         }}
       >
         <CardHeader className="items-center pb-0">
-          <CardTitle className="text-[#ffff]">Gráfico Categorias</CardTitle>
-          <CardDescription style={{ color: "#cccccc" }}>
-            Carregando dados...
-          </CardDescription>
+          <CardTitle className="text-white text-xl font-semibold">Gráfico Categorias</CardTitle>
+          <CardDescription className="text-gray-400">Carregando dados...</CardDescription>
         </CardHeader>
         <CardContent className="flex-1 pb-0">
           <div className="flex items-center justify-center h-64">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
+            <div className="relative">
+              <div className="animate-spin rounded-full h-12 w-12 border-4 border-gray-700 border-t-purple-500"></div>
+              <div className="absolute inset-0 rounded-full blur-xl bg-purple-500/20 animate-pulse"></div>
+            </div>
           </div>
         </CardContent>
       </Card>
-    );
+    )
   }
 
   return (
     <Card
-      className="flex flex-col mt-8"
+      className="flex flex-col mt-8 border-0 overflow-hidden"
       style={{
         backgroundColor: "#292929",
-        borderColor: "#292929",
-        boxShadow: "0 4px 12px rgba(0, 0, 0, 0.3)",
+        boxShadow: "0 8px 32px rgba(0, 0, 0, 0.4)",
         maxWidth: "20vw",
+        minHeight: "620px", // Aumentando altura de 550px para 620px para combinar com Goals Version 2
       }}
     >
-      <CardHeader className="items-center pb-0">
-        <CardTitle className="text-[#ffff]">Gráfico Categorias</CardTitle>
-        <CardDescription style={{ color: "#cccccc" }}>
-          {data && data.length > 0
-            ? "Mostra os gastos por categoria nos ultimos 30 dias."
-            : "Mostra os gastos por categoria nos ultimos 30 dias."}
-        </CardDescription>
+      {/* Gradient overlay at top */}
+      <div
+        className="absolute top-0 left-0 right-0 h-32 opacity-30 pointer-events-none"
+        style={{
+          background: "linear-gradient(180deg, rgba(110, 17, 176, 0.2) 0%, transparent 100%)",
+        }}
+      />
+
+      <CardHeader className="items-center pb-4 relative z-10">
+        <CardTitle className="text-white text-xl font-semibold">Gráfico Categorias</CardTitle>
       </CardHeader>
-      <CardContent className="flex-1 pb-0">
-        <ChartContainer
-          config={chartConfig}
-          className="mx-auto aspect-square max-h-[250px]"
-        >
+
+      <CardContent className="flex-1 pb-8 relative z-10">
+        <ChartContainer config={chartConfig} className="mx-auto aspect-square max-h-[300px] relative">
           <PieChart>
             <ChartTooltip
               cursor={false}
-              content={<ChartTooltipContent hideLabel />}
+              content={({ active, payload }) => {
+                if (active && payload && payload.length) {
+                  const data = payload[0]
+                  const value = typeof data.value === "number" ? data.value : 0
+                  return (
+                    <div
+                      className="rounded-lg border-0 px-4 py-3 shadow-2xl"
+                      style={{
+                        backgroundColor: "rgba(26, 26, 26, 0.95)",
+                        backdropFilter: "blur(12px)",
+                        boxShadow: `0 8px 32px ${data.payload.fill}40`,
+                      }}
+                    >
+                      <div className="flex items-center gap-2 mb-2">
+                        <div
+                          className="w-3 h-3 rounded-full"
+                          style={{
+                            backgroundColor: data.payload.fill,
+                            boxShadow: `0 0 8px ${data.payload.fill}`,
+                          }}
+                        />
+                        <p className="text-white font-semibold text-sm">{data.name}</p>
+                      </div>
+                      <p className="text-2xl font-bold text-white mb-1">R$ {value.toLocaleString("pt-BR")}</p>
+                      <p className="text-gray-400 text-xs">{getPercentage(value)}% do total</p>
+                    </div>
+                  )
+                }
+                return null
+              }}
             />
             <Pie
               data={chartData}
               dataKey="visitors"
               nameKey="browser"
-              innerRadius={60}
-              strokeWidth={5}
+              innerRadius={70}
+              outerRadius={100}
+              strokeWidth={0}
+              activeIndex={activeIndex ?? undefined}
+              activeShape={renderActiveShape}
+              onMouseEnter={(_, index) => setActiveIndex(index)}
+              onMouseLeave={() => setActiveIndex(null)}
+              animationBegin={0}
+              animationDuration={800}
+              animationEasing="ease-out"
             >
+              {chartData.map((entry, index) => (
+                <Cell
+                  key={`cell-${index}`}
+                  fill={entry.fill}
+                  style={{
+                    filter: activeIndex === index ? `drop-shadow(0 0 12px ${entry.fill})` : "none",
+                    transition: "all 0.3s ease",
+                  }}
+                />
+              ))}
+              {/* Removed radialGradient from the center */}
               <Label
                 content={({ viewBox }) => {
                   if (viewBox && "cx" in viewBox && "cy" in viewBox) {
                     return (
-                      <text
-                        x={viewBox.cx}
-                        y={viewBox.cy}
-                        textAnchor="middle"
-                        dominantBaseline="middle"
-                      >
+                      <text x={viewBox.cx} y={viewBox.cy} textAnchor="middle" dominantBaseline="middle">
                         <tspan
                           x={viewBox.cx}
-                          y={viewBox.cy}
-                          className="fill-[#fff] text-3xl font-bold"
+                          y={(viewBox.cy || 0) - 8}
+                          className="fill-white text-3xl font-bold"
+                          style={{ letterSpacing: "-0.5px" }}
                         >
-                          {totalVisitors.toLocaleString()}
+                          R$ {(totalVisitors / 1000).toFixed(1)}k
                         </tspan>
-                        <tspan
-                          x={viewBox.cx}
-                          y={(viewBox.cy || 0) + 24}
-                          className="fill-muted-foreground"
-                          style={{ fill: "darkgrey" }}
-                        >
-                          Gasto
+                        <tspan x={viewBox.cx} y={(viewBox.cy || 0) + 20} className="fill-gray-400 text-sm font-medium">
+                          Total Gasto
                         </tspan>
                       </text>
-                    );
+                    )
                   }
                 }}
               />
@@ -211,21 +248,56 @@ export const PieChartComponentWithAPI: React.FC<Props> = ({
           </PieChart>
         </ChartContainer>
 
-        {/* Legend - Category colors */}
-        <div className="flex flex-wrap gap-3 justify-center mt-4 px-4">
-          {chartData.map((item) => (
-            <div key={item.browser} className="flex items-center gap-2">
-              <div
-                className="w-3 h-3 rounded-full"
-                style={{ backgroundColor: item.fill }}
-              />
-              <span className="text-sm" style={{ color: "#cccccc" }}>
-                {item.browser}
-              </span>
+        {/* Adjusted legend to not use truncate and fit better */}
+        <div className="mt-10 px-2 space-y-2">
+          {chartData.map((item, index) => (
+            <div
+              key={item.browser}
+              className="flex items-center justify-between p-3 rounded-lg transition-all duration-300 cursor-pointer gap-3"
+              style={{
+                backgroundColor: hoveredCategory === item.browser ? "rgba(255, 255, 255, 0.05)" : "transparent",
+                border: `1px solid ${hoveredCategory === item.browser ? item.fill + "40" : "transparent"}`,
+              }}
+              onMouseEnter={() => {
+                setHoveredCategory(item.browser)
+                setActiveIndex(index)
+              }}
+              onMouseLeave={() => {
+                setHoveredCategory(null)
+                setActiveIndex(null)
+              }}
+            >
+              <div className="flex items-center gap-3 flex-1 min-w-0">
+                <div
+                  className="w-4 h-4 rounded-full transition-all duration-300 flex-shrink-0"
+                  style={{
+                    backgroundColor: item.fill,
+                    boxShadow: hoveredCategory === item.browser ? `0 0 12px ${item.fill}` : "none",
+                  }}
+                />
+                {/* Removed truncate and used text-xs for better fit */}
+                <span className="text-xs font-medium text-gray-300" style={{ lineHeight: "1.2" }}>
+                  {item.browser}
+                </span>
+              </div>
+              <div className="flex items-center gap-2 flex-shrink-0">
+                <span className="text-xs font-semibold text-white whitespace-nowrap">
+                  R$ {item.visitors.toLocaleString("pt-BR")}
+                </span>
+                <span
+                  className="text-xs font-medium px-2 py-1 rounded-full whitespace-nowrap"
+                  style={{
+                    backgroundColor: item.fill + "20",
+                    color: item.fill,
+                  }}
+                >
+                  {getPercentage(item.visitors)}%
+                </span>
+              </div>
             </div>
           ))}
         </div>
       </CardContent>
     </Card>
-  );
-};
+  )
+}
