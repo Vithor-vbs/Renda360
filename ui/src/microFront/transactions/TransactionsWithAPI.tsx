@@ -2,7 +2,6 @@ import React, { useState, useMemo } from "react";
 import "./transactions.css";
 import { TransactionCard } from "./TransactionCard";
 import { TransactionGridWithAPI } from "./TransactionGridWithAPI";
-import ButtonDate from "../buttonDate/buttonDate";
 import { useTransactions } from "../../hooks/useTransactions";
 
 const Transactions: React.FC = () => {
@@ -31,9 +30,6 @@ const Transactions: React.FC = () => {
         subtitle: "Compras realizadas",
       },
       Pix: { total: 9650, count: 23, subtitle: "Transferências instantâneas" },
-      TED: { total: 4310, count: 8, subtitle: "Transferências bancárias" },
-      Boleto: { total: 2500, count: 12, subtitle: "Pagamentos via boleto" },
-      Dinheiro: { total: 1200, count: 6, subtitle: "Saques e pagamentos" },
     }),
     []
   );
@@ -129,9 +125,6 @@ const Transactions: React.FC = () => {
     <div className="transactions-content">
       <div className="transactions-header">
         <h2>Transações</h2>
-        <div className="transaction-button">
-          <ButtonDate onRangeChange={handleDateRangeChange} />
-        </div>
       </div>
 
       {loading ? (
