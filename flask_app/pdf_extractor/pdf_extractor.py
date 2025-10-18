@@ -164,44 +164,52 @@ class NubankExtractor(PDFExtractor):
             TransactionCategory.RESTAURANTS: [
                 r'restaurante', r'rest\s', r'bar\s', r'cafe', r'café',
                 r'lanchonete', r'sorveteria', r'padaria', r'confeitaria',
-                r'churrascar', r'pizzaria', r'hamburger', r'self\s*service'
+                r'churrascar', r'pizzaria', r'hamburger', r'self\s*service',
+                r'ryori'
             ],
             TransactionCategory.GROCERIES: [
                 r'mercado', r'supermercado', r'super\s', r'hipermercado',
                 r'extra\s', r'carrefour', r'pao\s*de\s*acucar', r'big\s',
                 r'walmart', r'atacadao', r'sam.*club', r'hortifruti',
-                r'acougue', r'padaria.*pao', r'feira'
+                r'acougue', r'padaria.*pao', r'feira', r'mercadol'
             ],
             TransactionCategory.TRANSPORT: [
                 r'uber(?!\s*eats)', r'99(?!\s*food)', r'taxi', r'cabify',
                 r'metro', r'onibus', r'brt', r'vlt', r'trem', r'cptm',
-                r'bilhete\s*unico', r'riocard', r'cartao\s*transporte'
+                r'bilhete\s*unico', r'riocard', r'cartao\s*transporte',
+                r'nupay', r'estacionamento', r'v\s*park', r'ig\s*fort'
             ],
             TransactionCategory.FUEL: [
-                r'posto\s', r'combustivel', r'gasolina', r'alcool', r'etanol',
+                r'posto', r'combustivel', r'gasolina', r'alcool', r'etanol',
                 r'diesel', r'shell', r'petrobras', r'ipiranga', r'br\s*distribuidora',
-                r'esso', r'texaco', r'raizen'
+                r'esso', r'texaco', r'raizen', r'postonotadez'
             ],
             TransactionCategory.SHOPPING_ONLINE: [
                 r'amazon', r'mercado\s*livre', r'americanas', r'submarino',
                 r'magazine\s*luiza', r'casas\s*bahia', r'extra\.com',
-                r'shopee', r'aliexpress', r'ebay', r'olx', r'enjoei',
-                r'zattini', r'netshoes', r'dafiti'
+                r'shopee', r'aliexpress', r'alipay', r'ebay', r'olx', r'enjoei',
+                r'zattini', r'netshoes', r'dafiti', r'dl\s*\*alipay',
+                r'slautoparts', r'guitar\s*center', r'hurley',
+                r'mp\s*\*aliexpress', r'mercadopago'
             ],
             TransactionCategory.SHOPPING_PHYSICAL: [
                 r'shopping\s', r'loja\s', r'magazine\s(?!luiza)', r'riachuelo',
                 r'renner', r'cea\s', r'marisa', r'pernambucanas', r'ricardo\s*eletro',
-                r'fast\s*shop', r'fnac', r'livraria', r'papelaria'
+                r'fast\s*shop', r'fnac', r'livraria', r'papelaria',
+                r'galeria', r'cabeleireiro', r'salao', r'barbearia',
+                r'eletronica\s*central'
             ],
             TransactionCategory.ENTERTAINMENT: [
                 r'cinema', r'teatro', r'show', r'evento', r'ingresso',
                 r'parque', r'clube', r'bar.*karaoke', r'boate', r'balada',
-                r'festa', r'aniversario'
+                r'festa', r'aniversario', r'playstation', r'sonyplaystatn',
+                r'ebn\s*\*sony'
             ],
             TransactionCategory.SUBSCRIPTIONS: [
                 r'netflix', r'spotify', r'amazon\s*prime', r'youtube\s*premium',
-                r'disney\s*plus', r'globoplay', r'paramount', r'hbo', r'apple\s*music',
-                r'deezer', r'assinatura', r'mensalidade', r'anuidade'
+                r'youtubepremium', r'disney\s*plus', r'globoplay', r'paramount', 
+                r'hbo', r'apple\s*music', r'deezer', r'assinatura', 
+                r'mensalidade', r'anuidade', r'google\s*youtube'
             ],
             TransactionCategory.UTILITIES: [
                 r'light', r'enel', r'cemig', r'eletropaulo', r'energia',
@@ -217,12 +225,14 @@ class NubankExtractor(PDFExtractor):
             TransactionCategory.EDUCATION: [
                 r'escola', r'universidade', r'faculdade', r'curso', r'colegio',
                 r'ensino', r'educacao', r'matricula', r'mensalidade\s*escolar',
-                r'livro', r'apostila', r'material\s*escolar'
+                r'livro', r'apostila', r'material\s*escolar', r'fundacao',
+                r'edson\s*queiroz', r'unifor'
             ],
             TransactionCategory.FINANCIAL_SERVICES: [
                 r'banco\s', r'financeira', r'emprestimo', r'financiamento',
                 r'cartao\s*credito', r'anuidade', r'tarifa', r'taxa',
-                r'seguro', r'previdencia', r'investimento', r'corretora'
+                r'seguro', r'previdencia', r'investimento', r'corretora',
+                r'zul.*cartao', r'recarga', r'credito'
             ]
         }
 
@@ -335,6 +345,8 @@ class NubankExtractor(PDFExtractor):
         transactions = []
         date_pattern = r'^(\d{1,2}\s+\w{3})\b'
         amount_pattern = r'R\$\s*(-?[\d\.]+,\d{2})'
+        
+        skip_section = False  # Flag para ignorar seção de pagamentos
 
         for page in self.pdf.pages:
             text = page.extract_text()
@@ -344,7 +356,16 @@ class NubankExtractor(PDFExtractor):
             lines = text.split('\n')
 
             for line in lines:
-                # Skip obvious non-transaction lines
+                # Parar quando encontrar "Pagamentos e Financiamentos"
+                if 'pagamentos e financiamentos' in line.lower():
+                    skip_section = True
+                    continue
+                
+                # Ignorar tudo depois da seção de pagamentos
+                if skip_section:
+                    continue
+                
+                # Skip lines that are not transactions
                 if self._should_skip_line(line):
                     continue
 
