@@ -113,6 +113,37 @@ export interface DateRange {
   end: Date;
 }
 
+export interface SubscriptionTransaction {
+  id: number;
+  date: string;
+  amount: number;
+  description: string;
+  category: string | null;
+}
+
+export interface Subscription {
+  merchant: string;
+  average_amount: number;
+  frequency: number;
+  total_months: number;
+  average_day_of_month: number;
+  category: string | null;
+  first_charge: string;
+  last_charge: string;
+  total_spent: number;
+  transactions: SubscriptionTransaction[];
+}
+
+export interface SubscriptionsResponse {
+  subscriptions: Subscription[];
+  total_subscriptions: number;
+  total_monthly_cost: number;
+  period: {
+    start_date: string;
+    end_date: string;
+  };
+}
+
 // Julius AI Types (already defined in JuliusContext, but included for completeness)
 export interface JuliusMessage {
   id: number;

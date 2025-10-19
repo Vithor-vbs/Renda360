@@ -5,6 +5,7 @@ import { BalancesRowWithAPI } from "../balancesrow/BalancesRowWithAPI";
 import { PieChartComponentWithAPI } from "@/components/PieChartComponentWithAPI";
 import { InteractiveAreaChartWithAPI } from "@/components/InteractiveAreaChartWithAPI";
 import { Goals } from "../goals/Goals";
+import Subscription from "../subscription/Subscription"
 import { useDashboard } from "../../hooks/useDashboard";
 import { useCards } from "../../hooks/useCards";
 import { DateRange } from "../../api";
@@ -65,6 +66,9 @@ export const MainBoardWithAPI: React.FC = () => {
         </div>
         <div className="goals-container">
           <Goals />
+        </div>
+        <div className="subscription-container">
+          <Subscription />
         </div>
       </div>
     </div>
