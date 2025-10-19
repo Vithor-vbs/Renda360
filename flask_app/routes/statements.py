@@ -209,7 +209,8 @@ def upload_pdf():
                 print(f"Large Object {pdf_oid} cleaned (duplicate detected)")
             except Exception as cleanup_error:
                 print(f" Error cleaning LO: {cleanup_error}")
-            return jsonify({"msg": f"Error processing PDF: {e}"}), 500
+        
+        return jsonify({"msg": f"Error processing PDF: {e}"}), 500
     finally:
         # Clean up
         if lobj:

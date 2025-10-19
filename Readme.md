@@ -217,3 +217,57 @@ flask db upgrade
 
 - Verify `.env` JWT_SECRET_KEY
 - Check token expiration times
+
+# Unit Tests
+
+This project includes unit tests for backend endpoints (Flask) and core logic. The tests help ensure your PDF upload, transaction processing, and other backend features work correctly.
+
+## 🚀 Quick Start
+
+### 1️⃣ Setup Test Environment
+
+1. **Activate your Python virtual environment** (if not already):
+
+```bash
+# Activate virtual environment
+source venv/bin/activate  # Linux/Mac
+# OR
+venv\Scripts\activate     # Windows
+```
+
+2. **Install test dependencies:**:
+
+```bash
+pip install -r requirements-test.txt
+```
+
+### 2️⃣ Running Tests
+
+1. **Run all tests** (if not already):
+
+```bash
+python -m pytest tests/ -v
+```
+
+2. **Run specific test files** :
+```bash
+python -m pytest tests/test_auth.py -v           
+python -m pytest tests/test_statements.py -v       
+python -m pytest tests/test_user.py -v           
+```
+📁 Project Test Structure
+Renda360/
+│
+├── flask_app/
+│   ├── routes/
+│   ├── models.py
+│   └── app.py
+│
+├── tests/
+│   ├── __init__.py
+│   ├── conftest.py           # Test configuration & fixtures
+│   ├── test_auth.py          # Authentication endpoints
+│   ├── test_statements.py    # PDF upload & processing
+│   └── test_user.py          # User management endpoints
+│
+└── requirements-test.txt      # Test dependencies
