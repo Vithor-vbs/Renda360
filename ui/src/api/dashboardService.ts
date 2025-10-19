@@ -7,6 +7,7 @@ import {
   Transaction,
   Card,
   DateRange,
+  SubscriptionsResponse,
 } from "./types";
 
 export interface DashboardFilters {
@@ -248,5 +249,30 @@ export class DashboardService {
   }> {
     const response = await api.get("/dashboard/alerts");
     return response.data;
+  }
+
+    static async getSubscriptions(
+    dateRange?: DateRange
+  ): Promise<SubscriptionsResponse> {
+    const params = new URLSearchParams();
+
+    if (dateRange) {
+      params.append("start_date", dateRange.start.toISOString().split("T")[0]);
+      params.append("end_date", dateRange.end.toISOString().split("T")[0]);
+    }
+
+    const response = await api.get(`/dashboard/subscriptions?${params.toString()}`);
+    return response.data;
+  }
+
+    static async getRecentSubscriptions(): Promise<SubscriptionsResponse> {
+    const endDate = new Date();
+    const startDate = new Date();
+    startDate.setMonth(startDate.getMonth() - 6);
+
+    return this.getSubscriptions({
+      start: startDate,
+      end: endDate,
+    });
   }
 }
