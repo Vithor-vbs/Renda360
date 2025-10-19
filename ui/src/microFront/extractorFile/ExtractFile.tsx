@@ -68,12 +68,10 @@ const ExtractFile: React.FC = () => {
       return;
     }
 
-    // Para arquivos em processamento, vamos usar um ID temporário negativo
-    // Isso evita conflitos com IDs reais do banco
     const tempId = -Date.now();
 
     const tempFileItem: FileItem = {
-      id: tempId, // ID temporário único
+      id: tempId,
       name: file.name,
       type: getFileType(file),
       size: formatFileSize(file.size),
@@ -90,7 +88,6 @@ const ExtractFile: React.FC = () => {
         selectedCard.number
       );
 
-      // Recarregar a lista de PDFs para pegar o ID real do banco
       await loadInitialData();
 
       notifySuccess(`Upload concluído: ${response.msg}`);

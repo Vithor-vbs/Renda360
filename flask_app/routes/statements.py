@@ -84,9 +84,9 @@ def upload_pdf():
                         cleanup_lobj.close()
                         cleanup_conn.commit()
                         cleanup_conn.close()
-                        print(f"🧹 Large Object {pdf_oid} limpo (duplicata detectada)")
+                        print(f"Large Object {pdf_oid} cleaned (duplicate detected)")
                     except Exception as cleanup_error:
-                        print(f"⚠️ Erro limpando LO: {cleanup_error}")
+                        print(f"Error cleaning LO: {cleanup_error}")
                 return jsonify({
                     "msg": "Duplicate file detected (same file content already uploaded)",
                     "duplicate_type": "file_hash",
@@ -206,9 +206,9 @@ def upload_pdf():
                 cleanup_lobj.close()
                 cleanup_conn.commit()
                 cleanup_conn.close()
-                print(f"🧹 Large Object {pdf_oid} cleaned (duplicate detected)")
+                print(f"Large Object {pdf_oid} cleaned (duplicate detected)")
             except Exception as cleanup_error:
-                print(f"⚠️ Error cleaning LO: {cleanup_error}")
+                print(f" Error cleaning LO: {cleanup_error}")
             return jsonify({"msg": f"Error processing PDF: {e}"}), 500
     finally:
         # Clean up
