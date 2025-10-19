@@ -5,6 +5,7 @@ import { Label, Pie, PieChart, Cell, Sector } from "recharts"
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { type ChartConfig, ChartContainer, ChartTooltip } from "@/components/ui/chart"
+import "./PieChartComponentWithAPI.css"
 
 interface SpendingByCategory {
   category: string
@@ -90,6 +91,7 @@ const renderActiveShape = (props: any) => {
 }
 
 export const PieChartComponentWithAPI: React.FC<Props> = ({ data, loading }) => {
+
   const [activeIndex, setActiveIndex] = React.useState<number | null>(null)
   const [hoveredCategory, setHoveredCategory] = React.useState<string | null>(null)
 
@@ -146,7 +148,7 @@ export const PieChartComponentWithAPI: React.FC<Props> = ({ data, loading }) => 
         backgroundColor: "#292929",
         boxShadow: "0 8px 32px rgba(0, 0, 0, 0.4)",
         maxWidth: "20vw",
-        minHeight: "620px", // Aumentando altura de 550px para 620px para combinar com Goals Version 2
+        minHeight: "620px",
       }}
     >
       {/* Gradient overlay at top */}
@@ -159,6 +161,11 @@ export const PieChartComponentWithAPI: React.FC<Props> = ({ data, loading }) => 
 
       <CardHeader className="items-center pb-4 relative z-10">
         <CardTitle className="text-white text-xl font-semibold">Gráfico Categorias</CardTitle>
+        <CardDescription className="text-gray-400 text-center">
+          {data && data.length > 0
+            ? "Mostra os gastos por categoria nos últimos 30 dias."
+            : "Mostra os gastos por categoria nos últimos 30 dias."}
+        </CardDescription>
       </CardHeader>
 
       <CardContent className="flex-1 pb-8 relative z-10">
@@ -249,7 +256,15 @@ export const PieChartComponentWithAPI: React.FC<Props> = ({ data, loading }) => 
         </ChartContainer>
 
         {/* Adjusted legend to not use truncate and fit better */}
-        <div className="mt-10 px-2 space-y-2">
+        <div
+          className="pie-chart-legend mt-10 px-2 space-y-2"
+          style={{
+            maxHeight: "475px",
+            overflowY: "auto",
+            overflowX: "hidden",
+            paddingRight: "8px",
+          }}
+        >
           {chartData.map((item, index) => (
             <div
               key={item.browser}
@@ -267,7 +282,7 @@ export const PieChartComponentWithAPI: React.FC<Props> = ({ data, loading }) => 
                 setActiveIndex(null)
               }}
             >
-              <div className="flex items-center gap-3 flex-1 min-w-0">
+              <div className="flex items-center gap-3 flex-1 min-w-0 max-w-[120px]">
                 <div
                   className="w-4 h-4 rounded-full transition-all duration-300 flex-shrink-0"
                   style={{
@@ -275,8 +290,11 @@ export const PieChartComponentWithAPI: React.FC<Props> = ({ data, loading }) => 
                     boxShadow: hoveredCategory === item.browser ? `0 0 12px ${item.fill}` : "none",
                   }}
                 />
-                {/* Removed truncate and used text-xs for better fit */}
-                <span className="text-xs font-medium text-gray-300" style={{ lineHeight: "1.2" }}>
+                <span 
+                  className="text-xs font-medium text-gray-300 truncate" 
+                  style={{ lineHeight: "1.2" }}
+                  title={item.browser}
+                >
                   {item.browser}
                 </span>
               </div>

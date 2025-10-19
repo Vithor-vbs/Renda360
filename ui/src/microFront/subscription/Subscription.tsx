@@ -1,16 +1,16 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { DashboardService } from "../../api/dashboardService"  // ← CORRIGIDO
-import { Subscription, SubscriptionsResponse } from "../../api/types"  // ← CORRIGIDO
+import { DashboardService } from "../../api/dashboardService"
+import { Subscription, SubscriptionsResponse } from "../../api/types"
 import "./Subscription.css"
 
 interface SubscriptionWithState extends Subscription {
   isPaid: boolean
   color: string
+  isMock?: boolean
 }
 
-// Cores para cada assinatura (baseado no merchant)
 const getColorForMerchant = (merchant: string): string => {
   const colors: { [key: string]: string } = {
     netflix: "#e50914",
@@ -32,6 +32,57 @@ const getColorForMerchant = (merchant: string): string => {
   return colors.default
 }
 
+const mockSubscriptions: Subscription[] = [
+  {
+    merchant: "Netflix",
+    average_amount: 45.90,
+    frequency: 3,
+    total_months: 3,
+    average_day_of_month: 15,
+    category: "subscriptions",
+    first_charge: "2025-01-15",
+    last_charge: "2025-03-15",
+    total_spent: 137.70,
+    transactions: []
+  },
+  {
+    merchant: "Spotify",
+    average_amount: 21.90,
+    frequency: 3,
+    total_months: 3,
+    average_day_of_month: 10,
+    category: "subscriptions",
+    first_charge: "2025-01-10",
+    last_charge: "2025-03-10",
+    total_spent: 65.70,
+    transactions: []
+  },
+  {
+    merchant: "Amazon Prime",
+    average_amount: 14.90,
+    frequency: 3,
+    total_months: 3,
+    average_day_of_month: 20,
+    category: "subscriptions",
+    first_charge: "2025-01-20",
+    last_charge: "2025-03-20",
+    total_spent: 44.70,
+    transactions: []
+  },
+  {
+    merchant: "Disney+",
+    average_amount: 33.90,
+    frequency: 2,
+    total_months: 2,
+    average_day_of_month: 25,
+    category: "subscriptions",
+    first_charge: "2025-02-25",
+    last_charge: "2025-03-25",
+    total_spent: 67.80,
+    transactions: []
+  }
+]
+
 export default function SubscriptionComponent() {
   const [subscriptions, setSubscriptions] = useState<SubscriptionWithState[]>([])
   const [loading, setLoading] = useState(true)
@@ -48,14 +99,25 @@ export default function SubscriptionComponent() {
 
       const response: SubscriptionsResponse = await DashboardService.getRecentSubscriptions()
 
-      // Transformar dados do backend para o formato do componente
       const transformedSubscriptions: SubscriptionWithState[] = response.subscriptions.map((sub) => ({
         ...sub,
-        isPaid: false, // Começa como não pago (pode ser gerenciado localmente)
+        isPaid: false,
         color: getColorForMerchant(sub.merchant),
+        isMock: false
       }))
 
-      setSubscriptions(transformedSubscriptions)
+      if (transformedSubscriptions.length < 4) {
+        const needed = 4 - transformedSubscriptions.length
+        const mocksToAdd = mockSubscriptions.slice(0, needed).map(sub => ({
+          ...sub,
+          isPaid: false,
+          color: getColorForMerchant(sub.merchant),
+          isMock: true
+        }))
+        setSubscriptions([...transformedSubscriptions, ...mocksToAdd])
+      } else {
+        setSubscriptions(transformedSubscriptions)
+      }
     } catch (err) {
       console.error("Erro ao carregar assinaturas:", err)
       setError("Não foi possível carregar as assinaturas. Tente novamente.")
@@ -70,15 +132,6 @@ export default function SubscriptionComponent() {
     )
   }
 
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString)
-    return date.toLocaleDateString("pt-BR", {
-      day: "2-digit",
-      month: "short",
-      year: "numeric",
-    })
-  }
-
   const formatCurrency = (value: number) => {
     return value.toLocaleString("pt-BR", {
       minimumFractionDigits: 2,
@@ -86,8 +139,9 @@ export default function SubscriptionComponent() {
     })
   }
 
-  const totalValue = subscriptions.reduce((sum, sub) => sum + sub.average_amount, 0)
-  const paidCount = subscriptions.filter((sub) => sub.isPaid).length
+  const totalValue = subscriptions.filter(sub => !sub.isMock).reduce((sum, sub) => sum + sub.average_amount, 0)
+  const paidCount = subscriptions.filter((sub) => sub.isPaid && !sub.isMock).length
+  const realCount = subscriptions.filter(sub => !sub.isMock).length
 
   if (loading) {
     return (
@@ -140,7 +194,7 @@ export default function SubscriptionComponent() {
       <div className="subscriptions-container">
         <div className="subscriptions-header">
           <div>
-            <h2 className="subscriptions-title">Assinaturas</h2>
+            <h2 className="subscriptions-title">Assinaturas / Pagamentos Recorrentes</h2>
             <p className="subscriptions-description">Nenhuma assinatura recorrente detectada.</p>
           </div>
         </div>
@@ -157,8 +211,8 @@ export default function SubscriptionComponent() {
         <div>
           <h2 className="subscriptions-title">Assinaturas</h2>
           <p className="subscriptions-description">
-            {subscriptions.length} assinatura{subscriptions.length !== 1 ? "s" : ""} recorrente
-            {subscriptions.length !== 1 ? "s" : ""} detectada{subscriptions.length !== 1 ? "s" : ""}.
+            {realCount} assinatura{realCount !== 1 ? "s" : ""} recorrente
+            {realCount !== 1 ? "s" : ""} detectada{realCount !== 1 ? "s" : ""}.
           </p>
         </div>
         <div className="subscriptions-summary">
@@ -169,7 +223,7 @@ export default function SubscriptionComponent() {
           <div className="summary-item">
             <span className="summary-label">Pagas</span>
             <span className="summary-value">
-              {paidCount}/{subscriptions.length}
+              {paidCount}/{realCount}
             </span>
           </div>
         </div>
@@ -177,33 +231,40 @@ export default function SubscriptionComponent() {
 
       <div className="subscriptions-grid">
         {subscriptions.map((subscription) => (
-          <div key={subscription.merchant} className={`subscription-card ${subscription.isPaid ? "paid" : ""}`}>
+          <div key={subscription.merchant} className={`subscription-card ${subscription.isPaid ? "paid" : ""} ${subscription.isMock ? "mock" : ""}`}>
+            {subscription.isMock && (
+              <div className="mock-badge">
+                <span>Exemplo</span>
+              </div>
+            )}
             <div className="subscription-header">
               <div className="subscription-info">
                 <div className="subscription-indicator" style={{ backgroundColor: subscription.color }} />
                 <h3 className="subscription-name">{subscription.merchant}</h3>
               </div>
-              <label className="checkbox-container">
-                <input
-                  type="checkbox"
-                  checked={subscription.isPaid}
-                  onChange={() => handleTogglePaid(subscription.merchant)}
-                  className="subscription-checkbox"
-                />
-                <span className="checkbox-custom" style={{ borderColor: subscription.color }}>
-                  {subscription.isPaid && (
-                    <svg width="12" height="10" viewBox="0 0 12 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path
-                        d="M1 5L4.5 8.5L11 1.5"
-                        stroke={subscription.color}
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                  )}
-                </span>
-              </label>
+              {!subscription.isMock && (
+                <label className="checkbox-container">
+                  <input
+                    type="checkbox"
+                    checked={subscription.isPaid}
+                    onChange={() => handleTogglePaid(subscription.merchant)}
+                    className="subscription-checkbox"
+                  />
+                  <span className="checkbox-custom" style={{ borderColor: subscription.color }}>
+                    {subscription.isPaid && (
+                      <svg width="12" height="10" viewBox="0 0 12 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                          d="M1 5L4.5 8.5L11 1.5"
+                          stroke={subscription.color}
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    )}
+                  </span>
+                </label>
+              )}
             </div>
 
             <div className="subscription-details">
@@ -225,21 +286,21 @@ export default function SubscriptionComponent() {
               </div>
             </div>
 
-            {subscription.isPaid && (
-              <div className="paid-badge">
-                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <circle cx="7" cy="7" r="7" fill={subscription.color} opacity="0.2" />
-                  <path
-                    d="M4 7L6 9L10 5"
-                    stroke={subscription.color}
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-                <span style={{ color: subscription.color }}>Pago</span>
-              </div>
-            )}
+          {subscription.isPaid && !subscription.isMock && (
+            <div className="paid-overlay">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="7" cy="7" r="7" fill={subscription.color} opacity="0.2" />
+                <path
+                  d="M4 7L6 9L10 5"
+                  stroke={subscription.color}
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+              <span style={{ color: subscription.color }}>Pago</span>
+            </div>
+          )}
           </div>
         ))}
       </div>

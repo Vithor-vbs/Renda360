@@ -1,0 +1,25 @@
+/* Scrollbar styles for pie chart legend */
+.pie-chart-legend::-webkit-scrollbar {
+  width: 6px;
+}
+
+.pie-chart-legend::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 3px;
+}
+
+.pie-chart-legend::-webkit-scrollbar-thumb {
+  background: rgba(30, 168, 150, 0.6);
+  border-radius: 3px;
+  transition: background 0.3s ease;
+}
+
+.pie-chart-legend::-webkit-scrollbar-thumb:hover {
+  background: rgba(30, 168, 150, 0.8);
+}
+
+/* Firefox scrollbar */
+.pie-chart-legend {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(30, 168, 150, 0.6) rgba(255, 255, 255, 0.05);
+}
