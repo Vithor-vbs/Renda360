@@ -4,6 +4,8 @@
   --excel-color: #2c56a4;
   --pill-text: #f4f4f4;
   --grid-bg: #1e1e1e;
+  --delete-red: #dc2626;
+  --delete-red-hover: #b91c1c;
 }
 
 .file-grid-modern {
@@ -74,20 +76,91 @@
   text-overflow: ellipsis;
 }
 
+.file-actions {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
 .file-action {
-  background-color: var(--green-brand);
-  color: black;
-  font-weight: 600;
-  padding: 0.4rem 0.8rem;
-  border-radius: 0.6rem;
-  font-size: 0.75rem;
-  cursor: pointer;
+  background: none;
   border: none;
-  transition: background 0.2s ease;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  color: #a1a1aa;
 }
 
 .file-action:hover {
-  background-color: #15aa94;
+  background-color: #3a3a3a;
+  transform: scale(1.05);
+}
+
+.file-action:first-child {
+  color: var(--green-brand);
+}
+
+.file-action:first-child:hover {
+  background-color: rgba(28, 197, 170, 0.1);
+  color: var(--green-brand);
+}
+
+.file-action.view {
+  color: #3b82f6;
+}
+
+.file-action.view:hover {
+  background-color: rgba(59, 130, 246, 0.1);
+  color: #3b82f6;
+}
+
+.file-action.delete {
+  color: var(--delete-red);
+}
+
+.file-action.delete:hover {
+  background-color: rgba(220, 38, 38, 0.1);
+  color: var(--delete-red-hover);
+}
+
+.file-action:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.file-action:disabled:hover {
+  background-color: transparent;
+  transform: none;
+}
+
+.loading-spinner-small {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.loading-spinner-small:first-child {
+  border-top: 2px solid var(--green-brand);
+}
+
+.loading-spinner-small.view-spinner {
+  border-top: 2px solid #3b82f6;
+}
+
+.loading-spinner-small.delete-spinner {
+  border-top: 2px solid var(--delete-red);
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 .file-type-filter {
@@ -117,18 +190,4 @@
   background-color: var(--green-brand);
   color: #000;
   font-weight: 600;
-}
-
-.file-actions {
-  display: flex;
-  justify-content: center;
-  gap: 0.5rem;
-}
-
-.file-action.view {
-  background-color: #3b82f6;
-}
-
-.file-action.view:hover {
-  background-color: #2563eb;
 }

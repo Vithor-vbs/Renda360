@@ -6,11 +6,11 @@ import { statementsService, Card } from "../../api/statementsService";
 import { useNotification } from "../../context/NotificationService";
 
 interface FileItem {
+  id: number; 
   name: string;
   type: string;
   size: string;
   date: string;
-  id?: number;
   status?: "processing" | "completed" | "error";
 }
 
@@ -21,10 +21,8 @@ const ExtractFile: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
 
-  // Use notification service instead of local error state
   const { notifySuccess, notifyError } = useNotification();
 
-  // Load cards and PDFs on component mount
   useEffect(() => {
     loadInitialData();
   }, []);
@@ -48,7 +46,7 @@ const ExtractFile: React.FC = () => {
         id: pdf.id,
         name: pdf.file_name,
         type: "PDF",
-        size: "N/A", // Size not stored in backend hehe
+        size: "N/A",
         date: new Date(pdf.uploaded_at)
           .toISOString()
           .slice(0, 16)
@@ -70,8 +68,12 @@ const ExtractFile: React.FC = () => {
       return;
     }
 
-    // Add file to UI immediately with processing status
+    // Para arquivos em processamento, vamos usar um ID temporário negativo
+    // Isso evita conflitos com IDs reais do banco
+    const tempId = -Date.now();
+
     const tempFileItem: FileItem = {
+      id: tempId, // ID temporário único
       name: file.name,
       type: getFileType(file),
       size: formatFileSize(file.size),
@@ -88,26 +90,15 @@ const ExtractFile: React.FC = () => {
         selectedCard.number
       );
 
-      // Update the file status to completed
-      setFiles((prev) =>
-        prev.map((f) =>
-          f.name === file.name && f.status === "processing"
-            ? { ...f, status: "completed" }
-            : f
-        )
-      );
+      // Recarregar a lista de PDFs para pegar o ID real do banco
+      await loadInitialData();
 
-      // Show success notification
       notifySuccess(`Upload concluído: ${response.msg}`);
     } catch (err) {
       console.error("Upload error:", err);
 
-      // Remove the processing file from the list on error
-      setFiles((prev) =>
-        prev.filter((f) => !(f.name === file.name && f.status === "processing"))
-      );
+      setFiles((prev) => prev.filter((f) => f.id !== tempId));
 
-      // Handle different types of errors with appropriate notifications
       if (err instanceof Error) {
         if (
           err.message.includes("Duplicate") ||
@@ -193,7 +184,7 @@ const ExtractFile: React.FC = () => {
         </div>
       )}
 
-      {/* Files grid */}
+      {/* File Grid */}
       <FileGrid files={files} />
     </div>
   );
