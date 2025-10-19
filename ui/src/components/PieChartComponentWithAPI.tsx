@@ -161,7 +161,7 @@ export const PieChartComponentWithAPI: React.FC<Props> = ({ data, loading }) => 
 
       <CardHeader className="items-center pb-4 relative z-10">
         <CardTitle className="text-white text-xl font-semibold">Gráfico Categorias</CardTitle>
-        <CardDescription className="text-gray-400 text-center">
+        <CardDescription className="text-gray-400 text-left">
           {data && data.length > 0
             ? "Mostra os gastos por categoria nos últimos 30 dias."
             : "Mostra os gastos por categoria nos últimos 30 dias."}
