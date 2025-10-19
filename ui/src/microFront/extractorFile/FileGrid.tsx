@@ -73,10 +73,6 @@ const FileGrid: React.FC<FileGridProps> = ({ files, onFileDelete, refreshFiles }
   };
 
   const deleteFile = async (file: FileItem) => {
-    if (!window.confirm(`TESTE do BOLINHA "${file.name}"?`)) {
-      return;
-    }
-
     try {
       setDeletingFiles(prev => [...prev, file.id]);
       await statementsService.deletePDF(file.id);
