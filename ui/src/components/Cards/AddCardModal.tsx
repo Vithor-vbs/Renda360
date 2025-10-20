@@ -116,7 +116,7 @@ export const AddCardModal: React.FC<AddCardModalProps> = ({ isOpen, onClose, onS
                             <div
                                 className="absolute inset-0 rounded-xl text-white p-5"
                                 style={{
-                                    background: "linear-gradient(135deg, #0ea5e9, #10b981)",
+                                    background: "linear-gradient(135deg, #0ea5e9, #0ad1b2)",
                                     transform: "rotateY(180deg)",
                                     backfaceVisibility: "hidden",
                                     boxShadow: "0 10px 25px rgba(0,0,0,.3)",

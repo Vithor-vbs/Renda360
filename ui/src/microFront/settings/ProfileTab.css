@@ -1,0 +1,169 @@
+/* === SEÇÕES INTERNAS DO PERFIL === */
+.info-section {
+  background: #292929;
+  border: 1px solid #2a2a2a;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  color: #f4f4f5;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, .35);
+}
+
+.info-title {
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  color: #e5e7eb;
+}
+
+.title-icon {
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  border-radius: .5rem;
+  background: rgba(10, 209, 178, .18);
+  color: #0ad1b2;
+}
+
+.divider {
+  border-top: 1px solid #4b4b4b;
+  margin: 2rem 0 1.5rem;
+}
+
+/* === GRID DE INFORMAÇÕES PESSOAIS === */
+.info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem 1.5rem;
+}
+
+.info-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: #1a1a1a;
+  border: 1px solid #2a2a2a;
+  border-radius: .9rem;
+  padding: 1rem 1.2rem;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease, border-color 0.18s ease;
+}
+
+.info-card:hover {
+  transform: translateY(-2px);
+  background: #1f1f1f;
+  border-color: #3a3a3a;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.35);
+}
+
+.info-icon {
+  width: 32px;
+  height: 32px;
+  color: #9ca3af;
+  transition: color 0.2s ease;
+}
+
+.info-card:hover .info-icon {
+  color: #0ad1b2;
+}
+
+.info-label {
+  font-size: .85rem;
+  color: #9ca3af;
+}
+
+.info-value {
+  font-weight: 600;
+  font-size: 1rem;
+  color: #f5f7f9;
+  transition: color 0.2s ease;
+}
+
+.info-card:hover .info-value {
+  color: #d1fae5;
+}
+
+/* === GRID DOS CARTÕES === */
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.25rem;
+}
+
+/* === CARDS DE ATALHO === */
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+  margin-top: 1.25rem;
+}
+
+.feature-card {
+  background: #1a1a1a;
+  border: 1px solid #2a2a2a;
+  border-radius: .9rem;
+  padding: 1.6rem 1rem;
+  text-align: center;
+  color: #f4f4f5;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, .35);
+  transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+}
+
+.feature-card:hover {
+  transform: translateY(-2px);
+  background: #181818;
+  border-color: #3a3a3a;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.35);
+}
+
+.feature-icon {
+  width: 48px;
+  height: 48px;
+  margin: 0 auto .8rem;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  background: rgba(10, 209, 178, .18);
+  color: #0ad1b2;
+  transition: background 0.18s ease, color 0.18s ease;
+}
+
+.feature-card:hover .feature-icon {
+  background: rgba(10, 209, 178, .25);
+  color: #5ef5d6;
+}
+
+.feature-title {
+  font-weight: 700;
+  font-size: 1.05rem;
+  margin: .2rem 0 .25rem;
+  color: #e5e7eb;
+  transition: color 0.18s ease;
+}
+
+.feature-card:hover .feature-title {
+  color: #d1fae5;
+}
+
+.feature-sub {
+  font-size: .92rem;
+  color: #9ca3af;
+  margin: 0;
+  transition: color 0.18s ease;
+}
+
+.feature-card:hover .feature-sub {
+  color: #b3b3b3;
+}
+
+
+@media (max-width:920px) {
+  .info-grid { grid-template-columns: 1fr; }
+  .feature-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width:480px) {
+  .info-title { font-size: 1.1rem; }
+}
