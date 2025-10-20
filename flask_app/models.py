@@ -48,6 +48,7 @@ class PDFExtractable(db.Model):
     # For extra data or categories
     summary_json = db.Column(db.Text, nullable=True)
     transactions = db.relationship('Transaction', backref='pdf', lazy=True)
+    pdf_content_oid = db.Column(db.Integer, nullable=True)
 
 
 class Transaction(db.Model):

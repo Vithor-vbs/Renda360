@@ -22,6 +22,10 @@ def upload_pdf():
     temp_path = f"/tmp/{file.filename}"
     file.save(temp_path)
 
+    pdf_oid = None
+    conn_lo = None
+    lobj = None
+
     try:
         current_user_id = get_jwt_identity()
         user = User.query.get(int(current_user_id))
@@ -34,6 +38,23 @@ def upload_pdf():
         if not card:
             return jsonify({"msg": "Card not found"}), 404
 
+        import hashlib
+        with open(temp_path, 'rb') as f: #movi aqui pra cima viu 
+            file_content = f.read()
+            file_hash = hashlib.md5(file_content).hexdigest()
+
+        conn_lo = db.engine.raw_connection()
+        lobj = conn_lo.lobject(0, 'w')  # Create empty large object
+        lobj.write(file_content)  # Write content
+        pdf_oid = lobj.oid
+        
+        lobj.close()
+        lobj = None
+        conn_lo.commit() # Commit is done for safety to save the PDF object in PostgreSQL's internal table
+        conn_lo.close()
+        conn_lo = None
+
+        # Now process the PDF
         with NubankExtractor(temp_path, year=2025) as extractor:
             # Extract all info using new normalized methods
             statement_summary = extractor.extract_nubank_summary()
@@ -45,14 +66,6 @@ def upload_pdf():
             normalized_transactions = extractor.extract_normalized_transactions()  # New method
 
             # DUPLICATE DETECTION - Check for existing PDFs with same characteristics
-            import hashlib
-
-            # Calculate file hash
-            with open(temp_path, 'rb') as f:
-                file_content = f.read()
-                file_hash = hashlib.md5(file_content).hexdigest()
-
-            # Check for duplicates by multiple criteria
             existing_pdf = None
 
             # 1. Check by file hash (most reliable)
@@ -62,6 +75,18 @@ def upload_pdf():
             ).first()
 
             if existing_pdf:
+   
+                if pdf_oid:
+                    try:
+                        cleanup_conn = db.engine.raw_connection()
+                        cleanup_lobj = cleanup_conn.lobject(pdf_oid)
+                        cleanup_lobj.unlink()
+                        cleanup_lobj.close()
+                        cleanup_conn.commit()
+                        cleanup_conn.close()
+                        print(f"Large Object {pdf_oid} cleaned (duplicate detected)")
+                    except Exception as cleanup_error:
+                        print(f"Error cleaning LO: {cleanup_error}")
                 return jsonify({
                     "msg": "Duplicate file detected (same file content already uploaded)",
                     "duplicate_type": "file_hash",
@@ -75,7 +100,16 @@ def upload_pdf():
                 file_name=file.filename
             ).first()
 
-            if existing_pdf:
+            if existing_pdf:               
+                if pdf_oid:
+                    try:
+                        cleanup_conn = db.engine.raw_connection()
+                        cleanup_lobj = cleanup_conn.lobject(pdf_oid)
+                        cleanup_lobj.unlink()
+                        cleanup_lobj.close()
+                        cleanup_conn.commit()
+                        cleanup_conn.close()
+                    except: pass
                 return jsonify({
                     "msg": f"File with same name '{file.filename}' already exists for this card",
                     "duplicate_type": "filename",
@@ -92,6 +126,16 @@ def upload_pdf():
                 ).first()
 
                 if existing_pdf:
+                   
+                    if pdf_oid:
+                        try:
+                            cleanup_conn = db.engine.raw_connection()
+                            cleanup_lobj = cleanup_conn.lobject(pdf_oid)
+                            cleanup_lobj.unlink()
+                            cleanup_lobj.close()
+                            cleanup_conn.commit()
+                            cleanup_conn.close()
+                        except: pass
                     return jsonify({
                         "msg": f"Statement for the same period already exists ({period.get('start_date')} to {period.get('end_date')})",
                         "duplicate_type": "statement_period",
@@ -122,8 +166,7 @@ def upload_pdf():
                 next_closing_date=next_info.get('next_closing_date'),
                 next_invoice_balance=next_info.get('next_invoice_balance'),
                 total_open_balance=next_info.get('total_open_balance'),
-
-                # Still thinking on how to store summary
+                pdf_content_oid=pdf_oid,  # Store the OID reference
                 summary_json=str(categories)
             )
             db.session.add(pdf)
@@ -154,14 +197,30 @@ def upload_pdf():
         return jsonify({"msg": f"{len(normalized_transactions)} transactions and PDF info saved"}), 201
     except Exception as e:
         db.session.rollback()
+
+        if pdf_oid and conn_lo is None:  
+            try:
+                cleanup_conn = db.engine.raw_connection()
+                cleanup_lobj = cleanup_conn.lobject(pdf_oid)
+                cleanup_lobj.unlink()
+                cleanup_lobj.close()
+                cleanup_conn.commit()
+                cleanup_conn.close()
+                print(f"Large Object {pdf_oid} cleaned (duplicate detected)")
+            except Exception as cleanup_error:
+                print(f" Error cleaning LO: {cleanup_error}")
+        
         return jsonify({"msg": f"Error processing PDF: {e}"}), 500
     finally:
-        # Clean up the temp file
+        # Clean up
+        if lobj:
+            lobj.close()
+        if conn_lo:
+            conn_lo.close()
         import os
         if os.path.exists(temp_path):
             os.remove(temp_path)
-
-
+    
 # Get all cards for the current user
 @statements_bp.route('/cards', methods=['GET'])
 @jwt_required()
@@ -428,3 +487,97 @@ def get_spending_by_category():
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+
+@statements_bp.route('/pdf/<int:pdf_id>', methods=['GET'])
+@jwt_required()
+def get_pdf(pdf_id):
+    try:
+        current_user_id = int(get_jwt_identity())
+        
+        # Buscar PDF
+        pdf = PDFExtractable.query\
+            .join(Card, PDFExtractable.card_id == Card.id)\
+            .filter(PDFExtractable.id == pdf_id, Card.user_id == current_user_id)\
+            .first()
+            
+        if not pdf:
+            return jsonify({"msg": "PDF not found"}), 404
+        
+        if not pdf.pdf_content_oid:
+            return jsonify({"msg": "PDF content not available"}), 404
+
+        conn = db.engine.raw_connection()
+        lobj = conn.lobject(pdf.pdf_content_oid, 'rb')
+        pdf_data = lobj.read()
+        lobj.close()
+        conn.close()
+
+        def generate_pdf():
+            chunk_size = 8192
+            for i in range(0, len(pdf_data), chunk_size):
+                yield pdf_data[i:i + chunk_size]
+
+        from flask import Response
+        response = Response(
+            generate_pdf(),
+            mimetype='application/pdf',
+            headers={
+                'Content-Type': 'application/pdf',
+                'Content-Disposition': f'inline; filename="{pdf.file_name}"',
+                'Content-Length': str(len(pdf_data))
+            }
+        )
+        
+        return response
+        
+    except Exception as e:
+        return jsonify({"msg": f"Error retrieving PDF: {str(e)}"}), 500
+    
+@statements_bp.route('/pdf/<int:pdf_id>', methods=['DELETE'])
+@jwt_required()
+def delete_pdf(pdf_id):
+    try:
+        current_user_id = get_jwt_identity()
+        print(f"User {current_user_id} requesting deletion of PDF {pdf_id}")
+        
+        pdf = PDFExtractable.query\
+            .join(Card, PDFExtractable.card_id == Card.id)\
+            .filter(Card.user_id == current_user_id, PDFExtractable.id == pdf_id)\
+            .first()
+            
+        if not pdf:
+            print(f"PDF {pdf_id} not found for user {current_user_id}")
+            return jsonify({"msg": "PDF not found"}), 404
+
+        print(f"PDF found for deletion: {pdf.file_name}, OID: {pdf.pdf_content_oid}")
+
+        if pdf.pdf_content_oid:
+            try:
+                conn = db.engine.raw_connection()
+                lobj = conn.lobject(pdf.pdf_content_oid)
+                lobj.unlink()  
+                lobj.close()
+                conn.commit()
+                conn.close()
+                print(f"Large Object {pdf.pdf_content_oid} deleted")
+            except Exception as e:
+                print(f" Error deleting Large Object: {e}")
+
+        transactions_deleted = Transaction.query.filter_by(pdf_id=pdf_id).delete()
+        print(f"{transactions_deleted} transactions deleted")
+
+        db.session.delete(pdf)
+        db.session.commit()
+        
+        print(f"PDF {pdf_id} deleted successfully")
+        return jsonify({
+            "msg": "PDF deleted successfully",
+            "deleted_pdf_id": pdf_id,
+            "deleted_transactions": transactions_deleted
+        }), 200
+        
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error deleting PDF: {str(e)}")
+        return jsonify({"msg": f"Error deleting PDF: {str(e)}"}), 500

@@ -152,6 +152,47 @@ class StatementsService {
       throw error;
     }
   }
-}
 
+  
+  async downloadPDF(pdfId: number): Promise<Blob> {
+    try {
+      const response = await fetch(`${API_BASE_URL}/pdf/${pdfId}`, {
+        method: "GET",
+        headers: {
+          ...this.getAuthHeaders(),
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error downloading PDF: ${response.statusText}`);
+      }
+
+      return await response.blob();
+    } catch (error) {
+      console.error("Error downloading PDF:", error);
+      throw error;
+    }
+  }
+
+  async deletePDF(pdfId: number): Promise<{ msg: string }> {
+    try {
+      const response = await fetch(`${API_BASE_URL}/pdf/${pdfId}`, {
+        method: "DELETE",
+        headers: {
+          ...this.getAuthHeaders(),
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error deleting PDF: ${response.statusText}`);
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error("Error deleting PDF:", error);
+      throw error;
+    }
+  }
+}
 export const statementsService = new StatementsService();

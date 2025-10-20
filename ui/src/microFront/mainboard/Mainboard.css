@@ -12,22 +12,29 @@
 }
 
 .charts-and-goals {
-  display: flex;
-  gap: 2rem;
-  align-items: flex-start;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: auto auto;
+  column-gap: 2rem;
+  row-gap: 2rem;
+  align-items: start;
   transition: gap 0.3s ease;
 }
 
-/* Increase gap between charts when more space is available */
 .app-layout-content.sidebar-collapsed .charts-and-goals {
-  gap: 3rem;
+  column-gap: 3rem;
+  row-gap: 2rem;
 }
 
 .chart-container {
+  grid-row: 1 / 3;
+  grid-column: 1;
   transition: all 0.3s ease;
 }
 
 .goals-container {
+  grid-row: 1;
+  grid-column: 2;
   transition: all 0.3s ease;
   min-width: 300px;
   width: 100%;
@@ -40,4 +47,17 @@
 
 .app-layout-content.sidebar-collapsed .goals-container {
   min-width: 380px;
+}
+
+.subscription-container {
+  grid-row: 2;
+  grid-column: 2;
+  width: 100%;
+  transition: all 0.3s ease;
+  margin-top: 0; 
+}
+
+.app-layout-content.sidebar-collapsed .subscription-container {
+  min-width: 380px;
+  margin-top: 0;
 }

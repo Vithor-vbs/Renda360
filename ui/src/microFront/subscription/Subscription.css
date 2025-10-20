@@ -1,0 +1,240 @@
+.subscriptions-container {
+  background-color: #292929;
+  border-radius: 16px;
+  padding: 28px;
+  margin-top: 0;
+  min-height: 517px;
+  width: 100%;
+  grid-column: 1 / -1; /* Ocupa todas as colunas do grid pai */
+}
+
+.subscriptions-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 28px;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.subscriptions-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: #ffffff;
+  margin: 0 0 8px 0;
+}
+
+.subscriptions-description {
+  font-size: 14px;
+  color: #a0a0a0;
+  margin: 0;
+}
+
+.subscriptions-summary {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+}
+
+.summary-item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.summary-label {
+  font-size: 12px;
+  color: #a0a0a0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.summary-value {
+  font-size: 20px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.subscriptions-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.subscription-card {
+  background-color: #1f1f1f;
+  border-radius: 12px;
+  padding: 20px;
+  border: 1px solid #3a3a3a;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.subscription-card:hover {
+  border-color: #4a4a4a;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+}
+
+.subscription-card.paid {
+  background-color: #1a1f1a;
+  border-color: #2a3a2a;
+}
+
+.subscription-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.subscription-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
+}
+
+.subscription-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.subscription-name {
+  font-size: 18px;
+  font-weight: 600;
+  color: #ffffff;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.checkbox-container {
+  position: relative;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.subscription-checkbox {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  width: 0;
+  height: 0;
+}
+
+.checkbox-custom {
+  width: 20px;
+  height: 20px;
+  border: 2px solid #4a4a4a;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  background-color: transparent;
+}
+
+.subscription-checkbox:checked + .checkbox-custom {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.checkbox-container:hover .checkbox-custom {
+  border-color: #6a6a6a;
+}
+
+.subscription-details {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.detail-label {
+  font-size: 13px;
+  color: #a0a0a0;
+}
+
+.detail-value {
+  font-size: 16px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.detail-date {
+  font-size: 14px;
+  color: #d0d0d0;
+  font-weight: 500;
+}
+
+.paid-overlay {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 6px 12px;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
+  border-radius: 6px;
+  z-index: 5;
+}
+
+@media (max-width: 768px) {
+  .subscriptions-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .subscriptions-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .subscriptions-summary {
+    width: 100%;
+    justify-content: space-between;
+  }
+}
+
+.subscription-card.mock {
+  opacity: 0.6;
+  position: relative;
+}
+
+.mock-badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: rgba(255, 165, 0, 0.2);
+  border: 1px solid rgba(255, 165, 0, 0.4);
+  border-radius: 4px;
+  padding: 2px 8px;
+  font-size: 10px;
+  font-weight: 600;
+  color: #ffa500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  z-index: 10;
+}
+
+.subscription-card.mock .checkbox-container {
+  cursor: not-allowed;
+}

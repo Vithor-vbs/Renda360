@@ -3,6 +3,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from ..models import db, Card, PDFExtractable, Transaction
 from sqlalchemy import func, and_, extract
 from datetime import datetime, timedelta
+from collections import defaultdict  # ← ADICIONAR AQUI NO TOPO
 import calendar
 import traceback
 
@@ -215,6 +216,48 @@ def get_financial_overview():
         return jsonify({'error': f'Failed to get financial overview: {str(e)}'}), 500
 
 
+@dashboard_bp.route('/dashboard/subscriptions', methods=['GET'])
+@jwt_required()
+def get_subscriptions():
+    """Get detected recurring subscriptions"""
+    try:
+        user_id = get_jwt_identity()
+        
+        # Get date range from query params
+        start_date = request.args.get('start_date')
+        end_date = request.args.get('end_date')
+
+        if start_date:
+            start_date = datetime.strptime(start_date, '%Y-%m-%d')
+        else:
+            # Default to last 6 months
+            start_date = datetime.now() - timedelta(days=180)
+
+        if end_date:
+            end_date = datetime.strptime(end_date, '%Y-%m-%d')
+        else:
+            end_date = datetime.now()
+
+        # Detect subscriptions
+        subscriptions = detect_subscriptions(user_id, start_date, end_date)
+
+        return jsonify({
+            'subscriptions': subscriptions,
+            'total_subscriptions': len(subscriptions),
+            'total_monthly_cost': sum(sub['average_amount'] for sub in subscriptions),
+            'period': {
+                'start_date': start_date.isoformat(),
+                'end_date': end_date.isoformat()
+            }
+        }), 200
+
+    except Exception as e:
+        import traceback
+        error_details = traceback.format_exc()
+        print(f"Subscriptions error: {str(e)}")
+        print(f"Full traceback: {error_details}")
+        return jsonify({'error': f'Failed to get subscriptions: {str(e)}'}), 500
+
 def get_cards_summary(user_id):
     """Get summary of user's credit cards"""
     cards = Card.query.filter_by(user_id=user_id).all()
@@ -332,3 +375,115 @@ def get_spending_by_category(user_id, start_date, end_date):
             })
 
     return result
+
+
+def detect_subscriptions(user_id, start_date, end_date):
+    """
+    Detecta assinaturas recorrentes baseado em:
+    1. Mesmo merchant (description ou merchant name)
+    2. Valores similares (±5% de variação)
+    3. Dias do mês próximos (±3 dias de diferença)
+    4. Presente em pelo menos 2 meses diferentes
+    5. Não são parcelas (is_installment = False)
+    """
+    # Convert start and end dates to string format for comparison
+    start_str = start_date.strftime('%Y-%m-%d')
+    end_str = end_date.strftime('%Y-%m-%d')
+    
+    # Buscar todas as transações que NÃO são parcelas
+    transactions = db.session.query(Transaction).join(
+        PDFExtractable
+    ).join(Card).filter(
+        and_(
+            Card.user_id == user_id,
+            Transaction.date >= start_str,
+            Transaction.date <= end_str,
+            Transaction.is_installment == False,  # Não são parcelas
+            Transaction.merchant.isnot(None)  # Tem merchant identificado
+        )
+    ).order_by(Transaction.date).all()
+    
+    # Agrupar transações por merchant
+    merchant_groups = defaultdict(list)
+    for transaction in transactions:
+        merchant_groups[transaction.merchant].append({
+            'id': transaction.id,
+            'date': transaction.date,
+            'amount': float(transaction.amount),
+            'description': transaction.description,
+            'category': transaction.category
+        })
+    
+    # Identificar assinaturas recorrentes
+    detected_subscriptions = []
+    
+    for merchant, transactions_list in merchant_groups.items():
+        # Precisa ter pelo menos 2 ocorrências
+        if len(transactions_list) < 2:
+            continue
+        
+        # Agrupar por mês para verificar recorrência
+        monthly_transactions = defaultdict(list)
+        for trans in transactions_list:
+            # Extrair ano-mês da data (formato: "2025-08-21" -> "2025-08")
+            year_month = trans['date'][:7]
+            monthly_transactions[year_month].append(trans)
+        
+        # Precisa aparecer em pelo menos 2 meses diferentes
+        if len(monthly_transactions) < 2:
+            continue
+        
+        # Verificar se os valores são similares (±5%)
+        amounts = [trans['amount'] for trans in transactions_list]
+        avg_amount = sum(amounts) / len(amounts)
+        max_variation = avg_amount * 0.05  # 5% de variação permitida
+        
+        # Verificar se todos os valores estão dentro da variação aceitável
+        similar_amounts = all(
+            abs(amount - avg_amount) <= max_variation 
+            for amount in amounts
+        )
+        
+        if not similar_amounts:
+            continue
+        
+        # Verificar se os dias do mês são próximos (±3 dias)
+        days_of_month = []
+        for trans in transactions_list:
+            # Extrair dia do mês (formato: "2025-08-21" -> 21)
+            try:
+                day = int(trans['date'].split('-')[2])
+                days_of_month.append(day)
+            except:
+                continue
+        
+        if len(days_of_month) < 2:
+            continue
+        
+        avg_day = sum(days_of_month) / len(days_of_month)
+        similar_days = all(
+            abs(day - avg_day) <= 3 
+            for day in days_of_month
+        )
+        
+        if not similar_days:
+            continue
+        
+        # É uma assinatura! 🎉
+        detected_subscriptions.append({
+            'merchant': merchant,
+            'average_amount': round(avg_amount, 2),
+            'frequency': len(monthly_transactions),  # Quantos meses apareceu
+            'total_months': len(monthly_transactions),
+            'average_day_of_month': round(avg_day),
+            'category': transactions_list[0]['category'],
+            'first_charge': min(trans['date'] for trans in transactions_list),
+            'last_charge': max(trans['date'] for trans in transactions_list),
+            'total_spent': round(sum(amounts), 2),
+            'transactions': transactions_list  # Lista completa para detalhes
+        })
+    
+    # Ordenar por valor médio (assinaturas mais caras primeiro)
+    detected_subscriptions.sort(key=lambda x: x['average_amount'], reverse=True)
+    
+    return detected_subscriptions
