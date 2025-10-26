@@ -271,16 +271,10 @@ This project includes unit tests for backend endpoints (Flask) and core logic. T
 
 ### 1️⃣ Setup Test Environment
 
-1. **Activate your Python virtual environment** (if not already):
-
-```bash
-# Activate virtual environment
-source venv/bin/activate  # Linux/Mac
-# OR
-venv\Scripts\activate     # Windows
-```
+1. **Activate your Python virtual environment** (on root, check steps above):
 
 2. **Install test dependencies:**:
+   on /tests folder:
 
 ```bash
 pip install -r requirements-test.txt
