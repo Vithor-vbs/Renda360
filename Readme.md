@@ -61,7 +61,7 @@ JWT_SECRET_KEY=your-super-secret-key-change-this
 CLIENT_ORIGIN=http://localhost:5173
 FLASK_APP=flask_app.app
 
-OPENAI_API_KEY= 💩
+OPENAI_API_KEY=****
 ```
 
 3. **Backend Dependencies**
@@ -163,6 +163,51 @@ Access the application at `http://localhost:5173`
 | /refresh   | POST   | Refresh access token     |
 | /protected | GET    | Test authenticated route |
 
+## Team Development Guidelines
+
+### Working with Database Migrations
+
+**⚠️ IMPORTANT: Always run migrations after pulling changes!**
+
+#### After every `git pull`:
+
+```bash
+# Check for new migrations and apply them
+flask db upgrade
+```
+
+#### When creating new migrations:
+
+```bash
+# 1. Pull latest changes first
+git pull && flask db upgrade
+
+# 2. Make your model changes in flask_app/models.py
+
+# 3. Generate migration
+flask db migrate -m "Descriptive message about changes"
+
+# 4. Test the migration
+flask db upgrade
+
+# 5. Commit both model and migration files
+git add flask_app/models.py flask_app/migrations/versions/[new-file].py
+git commit -m "Your commit message"
+git push
+```
+
+#### If you encounter migration conflicts:
+
+```bash
+# Check current state
+flask db current
+flask db history
+
+# If multiple heads exist, merge them
+flask db merge -m "Merge migration heads"
+flask db upgrade
+```
+
 ## Troubleshooting
 
 **Database Connection Issues**
@@ -250,24 +295,26 @@ python -m pytest tests/ -v
 ```
 
 2. **Run specific test files** :
+
 ```bash
-python -m pytest tests/test_auth.py -v           
-python -m pytest tests/test_statements.py -v       
-python -m pytest tests/test_user.py -v           
+python -m pytest tests/test_auth.py -v
+python -m pytest tests/test_statements.py -v
+python -m pytest tests/test_user.py -v
 ```
+
 📁 Project Test Structure
 Renda360/
 │
 ├── flask_app/
-│   ├── routes/
-│   ├── models.py
-│   └── app.py
+│ ├── routes/
+│ ├── models.py
+│ └── app.py
 │
 ├── tests/
-│   ├── __init__.py
-│   ├── conftest.py           # Test configuration & fixtures
-│   ├── test_auth.py          # Authentication endpoints
-│   ├── test_statements.py    # PDF upload & processing
-│   └── test_user.py          # User management endpoints
+│ ├── **init**.py
+│ ├── conftest.py # Test configuration & fixtures
+│ ├── test_auth.py # Authentication endpoints
+│ ├── test_statements.py # PDF upload & processing
+│ └── test_user.py # User management endpoints
 │
-└── requirements-test.txt      # Test dependencies
+└── requirements-test.txt # Test dependencies
