@@ -2,7 +2,7 @@
 
 ## System Overview
 
-![image](https://github.com/user-attachments/assets/86b9125f-74b1-4588-a88e-9d052dac1c36)
+<img width="2026" height="1075" alt="image" src="https://github.com/user-attachments/assets/8ba5ba93-b897-4f41-b336-dce2f18b1022" />
 
 1. User uploads Nubank PDF
    ↓
